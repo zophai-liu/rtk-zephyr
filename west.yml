@@ -22,7 +22,7 @@ manifest:
     - name: upstream
       url-base: https://github.com/zephyrproject-rtos
     - name: rtkconnectivity
-      url-base: git@github.com:rtkconnectivity
+      url-base: https://github.com/rtkconnectivity
 
   #
   # Please add items below based on alphabetical order
@@ -47,4 +47,3 @@ manifest:
   self:
     path: zephyr
     west-commands: scripts/west-commands.yml
-    import: submanifests
