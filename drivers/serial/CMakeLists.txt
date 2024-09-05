@@ -66,6 +66,7 @@ zephyr_library_sources_ifdef(CONFIG_UART_EFINIX_SAPPIHIRE uart_efinix_sapphire.c
 zephyr_library_sources_ifdef(CONFIG_UART_SEDI uart_sedi.c)
 zephyr_library_sources_ifdef(CONFIG_UART_BCM2711_MU uart_bcm2711.c)
 zephyr_library_sources_ifdef(CONFIG_UART_RTL87X2G uart_rtl87x2g.c)
+zephyr_library_sources_ifdef(CONFIG_UART_RTL8752H uart_rtl8752h.c)
 
 zephyr_library_sources_ifdef(CONFIG_USERSPACE   uart_handlers.c)
 
