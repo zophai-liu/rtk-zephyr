@@ -65,4 +65,7 @@ source "drivers/dma/Kconfig.mcux_pxp"
 source "drivers/dma/Kconfig.mcux_smartdma"
 
 source "drivers/dma/Kconfig.rtl87x2g"
+
+source "drivers/dma/Kconfig.rtl8752h"
+
 endif # DMA
