@@ -26,7 +26,11 @@
 		#size-cells = <1>;
 		app_partition: partition@36000 {
 			label = "app-image";
-			reg = <0x36000 DT_SIZE_K(136)>;
+			reg = <0x36000 (DT_SIZE_K(136)+DT_SIZE_K(16))>;
+		};
+		storage_partition: partition@5C000 {
+			label = "storage";
+			reg = <0x5C000 DT_SIZE_K(16)>;
 		};
 	};
 };
