@@ -47,11 +47,11 @@
 			#size-cells = <1>;
 			app_ram_data: memory@209000 {
 				device_type = "ram data region";
-				reg = < 0x209000 DT_SIZE_K(16)>;
+				reg = < 0x209000 DT_SIZE_K(48)>;
 			};
-			heap0: memory@20D000 {
+			heap0: memory@215000 {
 				device_type = "heap region";
-				reg = < 0x20D000 DT_SIZE_K(52)>;
+				reg = < 0x215000 DT_SIZE_K(20)>;
 			};
 		};
 		cache_ram{
