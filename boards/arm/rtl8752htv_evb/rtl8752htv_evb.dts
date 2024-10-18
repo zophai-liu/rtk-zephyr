@@ -24,13 +24,13 @@
 		compatible = "fixed-partitions";
 		#address-cells = <1>;
 		#size-cells = <1>;
-		app_partition: partition@36000 {
+		app_partition: partition@12000 {
 			label = "app-image";
-			reg = <0x36000 (DT_SIZE_K(136)+DT_SIZE_K(16))>;
+			reg = <0x12000 (DT_SIZE_K(424))>;
 		};
-		storage_partition: partition@5C000 {
+		storage_partition: partition@7C000 {
 			label = "storage";
-			reg = <0x5C000 DT_SIZE_K(16)>;
+			reg = <0x7C000 DT_SIZE_K(16)>;
 		};
 	};
 };
