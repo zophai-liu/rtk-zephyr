@@ -1,0 +1,32 @@
+if SOC_SERIES_RTL8752H
+
+# specifies the frequency of the hardware timer used for the system clock (in Hz)
+config SYS_CLOCK_HW_CYCLES_PER_SEC
+	int
+	default 32000 if SYSTICK_USE_EXTERNAL_CLOCK
+	default 40000000 if SYSTICK_USE_CPU_CLOCK
+
+config NUM_IRQS
+	int
+	default 32
+
+config CORTEX_M_SYSTICK
+	default y
+
+config SYS_CLOCK_TICKS_PER_SEC
+	int
+	default 100
+	#1s = 100 ticks
+
+# config ARCH_HAS_CUSTOM_BUSY_WAIT
+# 	default y
+
+# config IDLE_STACK_SIZE
+#     default 1024
+
+config NUM_METAIRQ_PRIORITIES
+	default 1
+
+rsource "Kconfig.defconfig.rtl87*"
+
+endif # SOC_SERIES_RTL8752H

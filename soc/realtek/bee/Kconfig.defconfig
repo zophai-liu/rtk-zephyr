@@ -1,0 +1,7 @@
+if SOC_FAMILY_REALTEK_BEE
+
+rsource "*/Kconfig.defconfig"
+
+endif
+
+
