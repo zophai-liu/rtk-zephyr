@@ -117,6 +117,7 @@ config BT_RTL8752H
 	  processors.
 
 endchoice
+source "drivers/bluetooth/hci/Kconfig.realtek"
 
 if BT_SPI
 
