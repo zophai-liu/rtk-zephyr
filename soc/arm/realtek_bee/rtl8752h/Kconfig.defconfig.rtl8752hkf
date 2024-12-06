@@ -1,0 +1,6 @@
+if SOC_RTL8752HKF
+
+config SOC
+	default "rtl8752hkf"
+
+endif # SOC_RTL8752HKF
