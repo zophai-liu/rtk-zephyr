@@ -3,6 +3,13 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  */
+#include <zephyr/kernel.h>
+#include <zephyr/devicetree.h>
+#include <zephyr/drivers/flash.h>
+#include <zephyr/logging/log.h>
+
+#include <flash_nor_device.h>
+#include <trace.h>
 
 #define DT_DRV_COMPAT realtek_rtl8752h_flash_controller
 #define SOC_NV_FLASH_NODE DT_INST(0, soc_nv_flash)
@@ -12,15 +19,6 @@
 
 #define FLASH_SIZE DT_REG_SIZE(SOC_NV_FLASH_NODE)
 #define FLASH_ADDR DT_REG_ADDR(SOC_NV_FLASH_NODE)
-
-
-#include <zephyr/kernel.h>
-#include <zephyr/devicetree.h>
-#include <zephyr/drivers/flash.h>
-#include <zephyr/logging/log.h>
-
-#include <flash_nor_device.h>
-#include <trace.h>
 
 LOG_MODULE_REGISTER(flash_rtl8752h, CONFIG_FLASH_LOG_LEVEL);
 struct flash_rtl8752h_data {
