@@ -265,7 +265,7 @@ bool z_sys_post_kernel;
  *
  * @param level init level to run.
  */
-static void z_sys_init_run_level(enum init_level level)
+void z_sys_init_run_level(enum init_level level)
 {
 	static const struct init_entry *levels[] = {
 		__init_EARLY_start,
