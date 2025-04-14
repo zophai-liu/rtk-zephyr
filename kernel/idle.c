@@ -15,9 +15,7 @@
 #include <ksched.h>
 #include <kswap.h>
 #include <wait_q.h>
-#if defined(CONFIG_SOC_SERIES_RTL8752H)
-#include "trace.h"
-#endif
+
 LOG_MODULE_DECLARE(os, CONFIG_KERNEL_LOG_LEVEL);
 
 void idle(void *unused1, void *unused2, void *unused3)
@@ -58,7 +56,6 @@ void idle(void *unused1, void *unused2, void *unused3)
 			}
 			z_swap_unlocked();
 		}
-
 
 #if defined(CONFIG_SOC_SERIES_RTL8752H)
 		extern void LogUartDMAIdleHook(void);
@@ -105,10 +102,11 @@ void idle(void *unused1, void *unused2, void *unused3)
 			extern uint32_t *platform_pm_get_refuse_reason(void);
 			extern int btmac_pm_get_error_code(void);
 
-			DBG_DIRECT("Platform fail to enter dlps, error 0x%x, reason 0x%x\r\n",
-				platform_pm_get_error_code(), platform_pm_get_refuse_reason());
-			DBG_DIRECT("btmac pm error code, 0x%x\r\n", btmac_pm_get_error_code());
-
+			LOG_DBG("Platform fail to enter dlps, error 0x%x, reason 0x%x\r\n",
+				(uint32_t)platform_pm_get_error_code(),
+				(uint32_t)platform_pm_get_refuse_reason());
+			LOG_DBG("btmac pm error code, 0x%x\r\n",
+				(uint32_t)btmac_pm_get_error_code());
 		}
 #else
 		if (k_is_pre_kernel() || !pm_system_suspend(_kernel.idle)) {
@@ -134,7 +132,7 @@ void idle(void *unused1, void *unused2, void *unused3)
 		if (_kernel.ready_q.cache != _current) {
 			z_swap_unlocked();
 		}
-# endif /* !defined(CONFIG_USE_SWITCH) || defined(CONFIG_SPARC) */
+#endif /* !defined(CONFIG_USE_SWITCH) || defined(CONFIG_SPARC) */
 #endif /* !defined(CONFIG_PREEMPT_ENABLED) */
 	}
 }
