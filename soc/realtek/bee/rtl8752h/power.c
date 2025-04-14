@@ -266,8 +266,8 @@ static int rtl87x2x_power_init(void)
 	z_arm_nmi_set_handler(NMI_Handler);
 
 	LOG_INF("set pm exit_stage_time from %d to %d",
-		platform_pm_system.stage_time[PLATFORM_PM_EXIT], 13);
-	platform_pm_system.stage_time[PLATFORM_PM_EXIT] = 13;
+		platform_pm_system.stage_time[PLATFORM_PM_EXIT], 20);
+	platform_pm_system.stage_time[PLATFORM_PM_EXIT] = 20;
 
 	/* do devices & nvic resume in
 	 * rtk_pm_workq thread via zephyr's workq
