@@ -19,6 +19,12 @@
 #include <zephyr/logging/log.h>
 
 LOG_MODULE_DECLARE(soc, CONFIG_SOC_LOG_LEVEL);
+
+#if (CONFIG_PM && TICKLESS_KERNEL)
+#error "rtl8752h can not support PM and TICKLESS_KERNEL simultaneously \
+for current lowpower version."
+#endif
+
 #define REALTEK_POWER_LOG 0
 
 /* ROM Extern Variables and Functions */
