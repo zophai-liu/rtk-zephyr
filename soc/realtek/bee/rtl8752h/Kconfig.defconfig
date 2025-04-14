@@ -22,8 +22,6 @@ config SYS_CLOCK_TICKS_PER_SEC
 # config ARCH_HAS_CUSTOM_BUSY_WAIT
 # 	default y
 
-# config IDLE_STACK_SIZE
-#     default 1024
 
 config NUM_METAIRQ_PRIORITIES
 	default 1
@@ -34,6 +32,10 @@ config SYSTICK_USE_EXTERNAL_CLOCK
 
 config IDLE_STACK_SIZE
 	default 768
+
+config ARM_MPU
+	imply MPU_STACK_GUARD
+	default y
 
 rsource "Kconfig.defconfig.rtl87*"
 

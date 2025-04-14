@@ -32,3 +32,5 @@ zephyr_code_relocate(FILES power.c LOCATION RAM)
 # zephyr_code_relocate(FILES ${ZEPHYR_BASE}/lib/os/rb.c LOCATION ITCM)
 endif()
 endif()
+
+zephyr_sources_ifdef(CONFIG_ARM_MPU mpu_regions.c)

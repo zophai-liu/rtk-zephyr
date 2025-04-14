@@ -63,6 +63,11 @@ extern char __ram_text_reloc_size[];
 #endif
 
 static const struct z_arm_mpu_partition static_regions[] = {
+#if defined(CONFIG_SOC_SERIES_RTL8752H)
+/* RTL8752H has customized 7 MPU static region + 1 dynamic region,
+ * no available region can be used at here
+ */
+#else
 #if defined(CONFIG_COVERAGE_GCOV) && defined(CONFIG_USERSPACE)
 		{
 		/* GCOV code coverage accounting area. Needs User permissions
@@ -112,6 +117,7 @@ static const struct z_arm_mpu_partition static_regions[] = {
 			.attr = K_MEM_PARTITION_P_RO_U_NA,
 		},
 #endif /* !CONFIG_MULTITHREADING && CONFIG_MPU_STACK_GUARD */
+#endif
 };
 
 /**

@@ -12,5 +12,7 @@ config SOC_SERIES_RTL8752H
 	select SYSTICK_USE_EXTERNAL_CLOCK
 	select THREAD_STACK_INFO
 	select HAS_PM
+	select CPU_HAS_MPU
+	select CPU_HAS_CUSTOM_FIXED_SOC_MPU_REGIONS
 	help
 	  Enable support for RTL8725H MCU series
