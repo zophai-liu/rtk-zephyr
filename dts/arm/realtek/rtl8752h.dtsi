@@ -289,6 +289,19 @@
 			status = "disabled";
 		};
 
+		aonwdt: watchdog@40000190 {
+			compatible = "realtek,rtl8752h-aon-wdt";
+			reg = <0x40000190 0x10>;
+			status = "disabled";
+		};
+
+		corewdt: watchdog@40006000 {
+			compatible = "realtek,rtl8752h-core-wdt";
+			reg = <0x40006000 0x10>;
+			div-factor = <31>;
+			status = "disabled";
+		};
+
 		ir: ir@40015800 {
 			compatible = "realtek,bee-ir";
 			reg = <0x40015800 0x54>;
