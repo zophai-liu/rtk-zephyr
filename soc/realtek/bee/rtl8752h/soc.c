@@ -235,7 +235,7 @@ static int rtk_platform_init_stage_1(void)
 	return 0;
 }
 
-static int rtk_platform_init_stage_2(void)
+int rtk_platform_init_stage_2(void)
 {
 	platform_rtc_aon_init();
 
@@ -290,4 +290,4 @@ static int rtk_register_update(void)
 
 SYS_INIT(rtk_platform_init_stage_1, EARLY, 0);
 SYS_INIT(rtk_register_update, PRE_KERNEL_2, 1);
-SYS_INIT(rtk_platform_init_stage_2, APPLICATION, 0);
+SYS_INIT(rtk_platform_init_stage_2, PRE_KERNEL_2, 2);
