@@ -107,16 +107,17 @@ static void restore_isr_registered_in_zephyr(void)
 		isr_handler = RamVectorTable[(uint32_t)vector_n];
 		if (isr_handler != (ISR_HANDLER)_isr_wrapper) {
 			irqn = vector_n - 16;
-			if (_sw_isr_table[irqn].isr == isr_handler) {
-				continue;
-			}
 			if (irq_is_enabled(irqn)) {
 				irq_disable(irqn);
-				z_isr_install(irqn, isr_handler, NULL);
+				if (_sw_isr_table[irqn].isr != isr_handler) {
+					z_isr_install(irqn, isr_handler, NULL);
+				}
 				RamVectorTableUpdate(vector_n, (IRQ_Fun)_isr_wrapper);
 				irq_enable(irqn);
 			} else {
-				z_isr_install(irqn, isr_handler, NULL);
+				if (_sw_isr_table[irqn].isr != isr_handler) {
+					z_isr_install(irqn, isr_handler, NULL);
+				}
 				RamVectorTableUpdate(vector_n, (IRQ_Fun)_isr_wrapper);
 			}
 			DBG_DIRECT("Restore ISR registered in SYS_INIT: vector_n:%d irqn:%d "
