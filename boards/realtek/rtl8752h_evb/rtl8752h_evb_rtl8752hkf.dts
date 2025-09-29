@@ -5,7 +5,7 @@
  */
 
 /dts-v1/;
-#include <realtek/rtl8752h.dtsi>
+#include <realtek/rtl8752hkf.dtsi>
 #include "rtl8752h_evb-pinctrl.dtsi"
 
 / {
@@ -25,18 +25,17 @@
 };
 
 &flash {
-	reg = <0x800000 DT_SIZE_K(512)>;
 	partitions {
 		compatible = "fixed-partitions";
 		#address-cells = <1>;
 		#size-cells = <1>;
 		app_partition: partition@15000 {
 			label = "app-image";
-			reg = <0x15000 (DT_SIZE_K(412))>;
+			reg = <0x15000 (DT_SIZE_K(500))>;
 		};
-		storage_partition: partition@7C000 {
+		storage_partition: partition@FC000 {
 			label = "storage";
-			reg = <0x7C000 DT_SIZE_K(16)>;
+			reg = <0xFC000 DT_SIZE_K(16)>;
 		};
 	};
 };
