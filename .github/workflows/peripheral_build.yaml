@@ -111,4 +111,4 @@ jobs:
           echo "============= build rtl87x2g_evb ============="
           west build -b rtl87x2g_evb samples/bluetooth/peripheral -p
           echo "============= build rtl8752h_evb ============="
-          west build -b rtl8752h_evb samples/bluetooth/peripheral -p
+          west build -b rtl8752h_evb/rtl8752htv samples/bluetooth/peripheral -p

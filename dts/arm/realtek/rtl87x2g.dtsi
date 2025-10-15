@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2025 Realtek Semiconductor Corp.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 #include <mem.h>
 #include <arm/armv8.1-m.dtsi>
 #include <freq.h>

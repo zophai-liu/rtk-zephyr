@@ -2,10 +2,6 @@
 # SPDX-License-Identifier: Apache-2.0
 if BOARD_RTL8752H_EVB
 
-config BOARD
-	default "rtl8752h_evb"
-endif
-
 if BT
 config NUM_METAIRQ_PRIORITIES
 	default 1
@@ -43,3 +39,5 @@ config BT_BUF_ACL_RX_COUNT
 config REALTEK_BT_CONTROLLER_STACK_SIZE
 	default 2560
 endif # BT
+
+endif # BOARD_RTL8752H_EVB

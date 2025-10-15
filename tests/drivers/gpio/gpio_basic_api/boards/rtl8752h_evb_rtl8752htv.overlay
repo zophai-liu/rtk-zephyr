@@ -1,0 +1,19 @@
+/*
+ * Copyright(c) 2024, Realtek Semiconductor Corporation.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+#include <zephyr/dt-bindings/gpio/realtek-bee-gpio.h>
+
+&gpio {
+	status = "okay";
+};
+
+/ {
+	resources {
+		compatible = "test-gpio-basic-api";
+		out-gpios = <&gpio 0 GPIO_ACTIVE_HIGH>;
+		in-gpios = <&gpio 1 (GPIO_ACTIVE_HIGH | BEE_GPIO_INPUT_DEBOUNCE_MS(8))>;
+	};
+};
