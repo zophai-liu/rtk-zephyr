@@ -10,7 +10,7 @@
 #include "trace.h"
 #include <zephyr/init.h>
 #include <zephyr/linker/linker-defs.h>
-#include "bee3plus_rom_defines.h"
+#include "rtl8752h_rom_defines.h"
 #include "mem_config.h"
 #include "mem_types.h"
 #include "os_sched.h"
@@ -201,7 +201,7 @@ static int rtk_platform_init_stage_1(void)
 	if (!aon_boot_done) {
 		pmu_power_on_sequence_restart();
 
-		DBG_DIRECT("Bee3Plus ROM version: %s %s", __DATE__, __TIME__);
+		DBG_DIRECT("rtl8752h ROM version: %s %s", __DATE__, __TIME__);
 
 		/* Pad_ClearAllWakeupINT(); */
 	} else {
