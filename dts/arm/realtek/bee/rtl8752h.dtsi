@@ -1,0 +1,160 @@
+/*
+ * Copyright (c) 2025 Realtek Semiconductor Corp.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+#include <mem.h>
+#include <arm/armv6-m.dtsi>
+#include <freq.h>
+#include <dt-bindings/pinctrl/rtl8752h-pinctrl.h>
+#include <dt-bindings/clock/rtl8752h-clocks.h>
+#include <zephyr/dt-bindings/gpio/gpio.h>
+
+/ {
+	chosen {
+		zephyr,flash = &flash;
+		zephyr,flash-controller = &fmc;
+		zephyr,sram = &sram0;
+	};
+
+	cpus {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		cpu: cpu@0 {
+			device_type = "cpu";
+			compatible = "arm,cortex-m0+";
+			reg = <0>;
+			#address-cells = <1>;
+			#size-cells = <1>;
+		};
+	};
+
+	data_ram {
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		sram0: memory@208800 {
+			compatible = "mmio-sram";
+			reg = <0x208800 DT_SIZE_K(57)>;
+		};
+	};
+
+	cache {
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		flash_cache: memory@21a000 {
+			device_type = "memory";
+			compatible = "mmio-sram";
+			reg = <0x21A000 DT_SIZE_K(8)>;
+		};
+	};
+
+	soc {
+		cctl: clock-controller@40000200 {
+			compatible = "realtek,bee-cctl";
+			reg = <0x40000200 0x400>;
+			status = "okay";
+			#clock-cells = <1>;
+			status = "okay";
+		};
+
+		fmc: flash-controller@40080000 {
+			compatible = "realtek,rtl8752h-flash-controller";
+			reg = <0x40080000 0x12C>;
+			#address-cells = <1>;
+			#size-cells = <1>;
+			status = "okay";
+
+			flash: flash@800000 {
+				compatible = "soc-nv-flash";
+				write-block-size = <1>;
+				erase-block-size = <4096>;
+
+				partitions {
+					compatible = "fixed-partitions";
+					#address-cells = <1>;
+					#size-cells = <1>;
+
+					rsvd_partition: partition@0000 {
+						label = "rsvd";
+						reg = <0x0 DT_SIZE_K(4)>;
+					};
+
+					oem_cfg_partition: partition@1000 {
+						label = "oem-cfg";
+						reg = <0x1000 DT_SIZE_K(4)>;
+					};
+
+					ota_header_partition: partition@2000 {
+						label = "ota-header";
+						reg = <0x1000 DT_SIZE_K(4)>;
+					};
+
+					rom_patch_partition: partition@3000 {
+						label = "rom-patch";
+						reg = <0x3000 DT_SIZE_K(28)>;
+					};
+
+					fsbl_partition: partition@A000 {
+						label = "fsbl";
+						reg = <0xA000 DT_SIZE_K(4)>;
+					};
+
+					lowerstack_patch_partition: partition@B000 {
+						label = "lowerstack-patch";
+						reg = <0xB000 DT_SIZE_K(40)>;
+					};
+				};
+			};
+		};
+
+		pinctrl: pin-controller@40000280 {
+			compatible = "realtek,bee-pinctrl";
+			#address-cells = <1>;
+			#size-cells = <1>;
+			reg = <0x40000280 0x864>;
+
+			gpio: gpio@40001000 {
+				compatible = "realtek,bee-gpio";
+				gpio-controller;
+				#gpio-cells = <2>;
+				reg = <0x40001000 0x64>;
+				clocks = <&cctl APB_CLK(GPIO)>;
+				port = <0>;
+				interrupts = <30 0>, <29 0>, <27 0>, <26 0>;
+				status = "disabled";
+			};
+		};
+
+		uart0: serial@40011000 {
+			compatible = "realtek,bee-uart";
+			reg = <0x40011000 0x60>;
+			clocks = <&cctl APB_CLK(UART0)>;
+			interrupts = <11 0>;
+			status = "disabled";
+		};
+
+		uart1: serial@40012000 {
+			compatible = "realtek,bee-uart";
+			reg = <0x40012000 0x60>;
+			clocks = <&cctl APB_CLK(UART1)>;
+			interrupts = <12 0>;
+			status = "disabled";
+		};
+
+		uart2: serial@40012400 {
+			compatible = "realtek,bee-uart";
+			reg = <0x40012400 0x60>;
+			clocks = <&cctl APB_CLK(UART2)>;
+			interrupts = <31 0>;
+			status = "disabled";
+		};
+	};
+};
+
+&nvic {
+	arm,num-irq-priority-bits = <3>;
+};
