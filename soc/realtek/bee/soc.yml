@@ -1,0 +1,9 @@
+family:
+- name: realtek_bee
+  series:
+  - name: rtl8752h
+    socs:
+    - name: rtl8752hjl
+    - name: rtl8752hmf
+    - name: rtl8752hkf
+    - name: rtl8752hjf
