@@ -1,0 +1,15 @@
+identifier: rtl8752h_dongle
+name: RTL8752H-DONGLE
+type: mcu
+arch: arm
+ram: 104
+flash: 1024
+toolchain:
+  - zephyr
+  - gnuarmemb
+  - xtools
+supported:
+  - pinctrl
+  - uart
+  - gpio
+vendor: realtek
