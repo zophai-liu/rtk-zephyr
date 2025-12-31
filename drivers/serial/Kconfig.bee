@@ -1,0 +1,23 @@
+# Copyright (c) 2026 Realtek Semiconductor Corp.
+# SPDX-License-Identifier: Apache-2.0
+
+config UART_BEE
+	bool "Realtek Bee series UART driver"
+	default y
+	depends on DT_HAS_REALTEK_BEE_UART_ENABLED
+	select USE_HAL_REALTEK_BEE_UART
+	select SERIAL_HAS_DRIVER
+	select SERIAL_SUPPORT_INTERRUPT
+	select PINCTRL
+
+	help
+	  This option enables the UART driver for Realtek Bee SoCs.
+
+if UART_BEE
+config UART_BEE_RX_THRESHOLD
+	int "Rx threshold level to trigger interrupt"
+	default 10
+	help
+	  The Rx threshold level to trigger rx interrupt, range from 1 to 29.
+
+endif # UART_BEE
