@@ -1,0 +1,33 @@
+/*
+ * Copyright (c) 2026 Realtek Semiconductor Corp.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/dts-v1/;
+#include <realtek/bee/rtl8762gkh_gku.dtsi>
+#include "rtl87x2g_evb-pinctrl.dtsi"
+#include "rtl87x2g_evb_a_common.dtsi"
+
+/ {
+	model = "Realtek RTL87x2G Model A Evaluation Board with RTL8762GKU Daughter Board";
+};
+
+&flash {
+	partitions {
+		compatible = "fixed-partitions";
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		/* 0x402d000-0x4100000: Free space for Zephyr */
+		app_partition: partition@2d000 {
+			label = "app-image";
+			reg = <0x2D000 DT_SIZE_K(828)>;
+		};
+
+		storage_partition: partition@fc000 {
+			label = "storage";
+			reg = <0xFC000 DT_SIZE_K(16)>;
+		};
+	};
+};

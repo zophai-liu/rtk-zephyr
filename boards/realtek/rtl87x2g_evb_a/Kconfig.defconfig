@@ -1,0 +1,9 @@
+# Copyright (c) 2026 Realtek Semiconductor Corp.
+# SPDX-License-Identifier: Apache-2.0
+
+if BOARD_RTL87X2G_EVB_A
+
+config BOARD
+	default "rtl87x2g_evb_a"
+
+endif # BOARD_RTL87X2G_EVB_A
