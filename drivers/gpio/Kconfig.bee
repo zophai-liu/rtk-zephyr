@@ -1,0 +1,32 @@
+# Copyright (c) 2026 Realtek Semiconductor Corp.
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig GPIO_BEE
+	bool "Realtek Bee series GPIO driver"
+	default y
+	select USE_HAL_REALTEK_BEE_GPIO
+	depends on DT_HAS_REALTEK_BEE_GPIO_ENABLED
+	help
+	  This option enables the GPIO driver for Realtek Bee SoCs.
+
+if GPIO_BEE
+config BEE_GPIO_SUPPORT_BOTH_EDGE
+	bool
+	default y if SOC_SERIES_RTL8752H
+endif # GPIO_BEE
+
+if GPIO_BEE && SOC_SERIES_RTL8752H
+
+config BEE_USE_P4_1_AS_GPIO29
+	bool "Use P4_1 as GPIO29 on RTL8752H"
+	default n
+	help
+	  If true, use P4_1 as GPIO29 on RTL8752H, else use P3_5.
+
+config BEE_USE_P4_2_AS_GPIO30
+	bool "Use P4_2 as GPIO30 on RTL8752H"
+	default n
+	help
+	  If true, use P4_2 as GPIO30 on RTL8752H, else use P3_6.
+
+endif # GPIO_BEE && SOC_SERIES_RTL8752H
