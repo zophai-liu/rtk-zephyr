@@ -1,0 +1,120 @@
+# Copyright(c) 2026, Realtek Semiconductor Corporation.
+# SPDX-License-Identifier: Apache-2.0
+
+config ZEPHYR_HAL_REALTEK_BEE_MODULE
+	bool
+
+config USE_HAL_REALTEK_BEE_ADC
+	bool
+	help
+	  Enable HAL Realtek Bee ADC driver
+
+config USE_HAL_REALTEK_BEE_TIM
+	bool
+	help
+	  Enable HAL Realtek Bee TIM driver
+
+config USE_HAL_REALTEK_BEE_ENHTIM
+	bool
+	help
+	  Enable HAL Realtek Bee ENHTIM driver
+
+config USE_HAL_REALTEK_BEE_RTC
+	bool
+	help
+	  Enable HAL Realtek Bee RTC driver
+
+config USE_HAL_REALTEK_BEE_DMA
+	bool
+	help
+	  Enable HAL Realtek Bee DMA driver
+
+config USE_HAL_REALTEK_BEE_GPIO
+	bool
+	help
+	  Enable HAL Realtek Bee GPIO driver
+
+config USE_HAL_REALTEK_BEE_I2C
+	bool
+	help
+	  Enable HAL Realtek Bee I2C driver
+
+config USE_HAL_REALTEK_BEE_I2S
+	bool
+	help
+	  Enable HAL Realtek Bee I2S driver
+
+config USE_HAL_REALTEK_BEE_CODEC
+	bool
+	help
+	  Enable HAL Realtek Bee CODEC driver
+
+config USE_HAL_REALTEK_BEE_KEYSCAN
+	bool
+	help
+	  Enable HAL Realtek Bee KEYSCAN driver
+
+config USE_HAL_REALTEK_BEE_AON_QDEC
+	bool
+	help
+	  Enable HAL Realtek Bee AON_QDEC driver
+
+config USE_HAL_REALTEK_BEE_QDEC
+	bool
+	help
+	  Enable HAL Realtek Bee QDEC driver
+
+config USE_HAL_REALTEK_BEE_UART
+	bool
+	help
+	  Enable HAL Realtek Bee UART driver
+
+config USE_HAL_REALTEK_BEE_SPI
+	bool
+	help
+	  Enable HAL Realtek Bee SPI driver
+
+config USE_HAL_REALTEK_BEE_SDHC
+	bool
+	help
+	  Enable HAL Realtek Bee SDHC driver
+
+config USE_HAL_REALTEK_BEE_IR
+	bool
+	help
+	  Enable HAL Realtek Bee IR driver
+
+config USE_HAL_REALTEK_BEE_CAN
+	bool
+	help
+	  Enable HAL Realtek Bee CAN driver
+
+config USE_HAL_REALTEK_BEE_USB
+	bool
+	help
+	  Enable HAL Realtek Bee USB driver
+
+config USE_HAL_REALTEK_BEE_AON_WDT
+	bool
+	help
+	  Enable HAL Realtek Bee AON WDT driver
+
+config USE_HAL_REALTEK_BEE_CORE_WDT
+	bool
+	help
+	  Enable HAL Realtek Bee CORE WDT driver
+
+config USE_HAL_REALTEK_BEE_RCC
+	bool
+	help
+	  Enable HAL Realtek Bee RCC driver
+
+config USE_HAL_REALTEK_BEE_NVIC
+	bool
+	help
+	  Enable HAL Realtek Bee NVIC driver
+
+config USE_HAL_REALTEK_BEE_PINMUX
+	bool
+	help
+	  Enable HAL Realtek Bee PINMUX driver
