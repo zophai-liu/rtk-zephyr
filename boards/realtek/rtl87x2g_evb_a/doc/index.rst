@@ -5,6 +5,7 @@ RTL87X2G-EVB-A
 
 Overview
 ********
+
 RTL87x2G Model A evaluation board works along with an interchangeable daughterboard that houses
 a real RTL87x2G series SoC.
 
@@ -27,7 +28,7 @@ The RTL87x2G series contains various chip types, each supporting different hardw
 
 Below are the common hardware features of the RTL87x2G series:
 
-- KM4 core compatible ARM-M55 core MAX@125MHz
+- Realtek KM4 core compatible with Arm Cortex-M55, running at 125MHz
 - M-profile Vector Extension (MVE) for vector computation
 - 32KB Icache, 16KB Dcache, and 384KB SRAM
 - Some part numbers  include MCM 4MB PSRAM
@@ -49,6 +50,7 @@ The `RTL87x2G Introduction`_ has detailed hardware information about specific pa
 
 Board
 ==================
+
 RTL87x2G Model A Evaluation Board supports these features:
 
 - 5V to 3.3V & 1.8V LDO power module
@@ -108,6 +110,7 @@ in addition to the Zephyr image.
 
 Flashing Zephyr Image
 =======================
+
 Before using the J-Link to flash the Zephyr image, it's essential to first configure it correctly by referring to the `RTL87x2G J-Link Setup Guide`_.
 Ensure that the J-Link is properly configured and connected to the board. Once the setup is verified, proceed to build and flash the :zephyr:code-sample:`hello_world` application.
 
