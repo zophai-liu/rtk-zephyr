@@ -31,7 +31,7 @@ struct uart_bee_config {
 	uint16_t clkid;
 	bool hw_flow_ctrl;
 	const struct pinctrl_dev_config *pcfg;
-#if defined(CONFIG_UART_INTERRUPT_DRIVEN)
+#ifdef CONFIG_UART_INTERRUPT_DRIVEN
 	uart_irq_config_func_t irq_config_func;
 #endif
 };
@@ -88,11 +88,11 @@ static uint32_t rtl_cfg2idx_baudrate(uint32_t baudrate)
 		return 10;
 
 	default:
-		return -ENOSYS;
+		return -ENOTSUP;
 	}
 }
 
-static uint16_t rtl_cfg2mac_data_bits(uint32_t data_bits)
+static uint16_t rtl_cfg2mac_data_bits(enum uart_config_data_bits  data_bits)
 {
 	switch (data_bits) {
 	case UART_CFG_DATA_BITS_7:
@@ -100,11 +100,11 @@ static uint16_t rtl_cfg2mac_data_bits(uint32_t data_bits)
 	case UART_CFG_DATA_BITS_8:
 		return UART_WORD_LENGTH_8BIT;
 	default:
-		return -ENOSYS;
+		return -ENOTSUP;
 	}
 }
 
-static int rtl_cfg2mac_stopbits(uint32_t stop_bits)
+static int rtl_cfg2mac_stopbits(enum uart_config_stop_bits stop_bits)
 {
 	switch (stop_bits) {
 	case UART_CFG_STOP_BITS_1:
@@ -112,11 +112,11 @@ static int rtl_cfg2mac_stopbits(uint32_t stop_bits)
 	case UART_CFG_STOP_BITS_2:
 		return UART_STOP_BITS_2;
 	default:
-		return -ENOSYS;
+		return -ENOTSUP;
 	}
 }
 
-static uint16_t rtl_cfg2mac_parity(uint32_t parity)
+static uint16_t rtl_cfg2mac_parity(enum uart_config_parity parity)
 {
 	switch (parity) {
 	case UART_CFG_PARITY_NONE:
@@ -126,7 +126,7 @@ static uint16_t rtl_cfg2mac_parity(uint32_t parity)
 	case UART_CFG_PARITY_EVEN:
 		return UART_PARITY_EVEN;
 	default:
-		return -ENOSYS;
+		return -ENOTSUP;
 	}
 }
 
@@ -166,9 +166,9 @@ static int uart_bee_configure(const struct device *dev, const struct uart_config
 		return -ENOTSUP;
 	}
 
-	LOG_DBG("[%s] baudrate_idx=%d, wordlen=%d, stopbits=%d, parity=%d, "
+	LOG_DBG("baudrate_idx=%d, wordlen=%d, stopbits=%d, parity=%d, "
 		   "hw_flow_ctrl=%d",
-		   __func__, baudrate_idx, wordlen, stopbits, parity, config->hw_flow_ctrl);
+		   baudrate_idx, wordlen, stopbits, parity, config->hw_flow_ctrl);
 
 	UART_StructInit(&uart_init_struct);
 	uart_init_struct.UART_Div = RTL_UART_BAUDRATE_TABLE[baudrate_idx][0];
@@ -207,7 +207,7 @@ static int uart_bee_poll_in(const struct device *dev, unsigned char *c)
 	if (!UART_GetFlagStatus(uart, UART_FLAG_RX_DATA_AVA)) {
 		return -1;
 	}
-	LOG_DBG("[%s] c=%c", __func__, *c);
+	LOG_DBG("c=%c", *c);
 
 	*c = (unsigned char)UART_ReceiveByte(uart);
 
@@ -252,7 +252,6 @@ static int uart_bee_err_check(const struct device *dev)
 }
 
 #ifdef CONFIG_UART_INTERRUPT_DRIVEN
-
 static int uart_bee_fifo_fill(const struct device *dev, const uint8_t *tx_data, int size)
 {
 	const struct uart_bee_config *config = dev->config;
@@ -272,7 +271,7 @@ static int uart_bee_fifo_fill(const struct device *dev, const uint8_t *tx_data, 
 
 	irq_unlock(key);
 
-	LOG_DBG("[%s] num_tx=%d", __func__, num_tx);
+	LOG_DBG("num_tx=%d", num_tx);
 
 	return num_tx;
 }
@@ -287,7 +286,7 @@ static int uart_bee_fifo_read(const struct device *dev, uint8_t *rx_data, const 
 		rx_data[num_rx++] = UART_ReceiveByte(uart);
 	}
 
-	LOG_DBG("[%s] num_rx=%d", __func__, num_rx);
+	LOG_DBG("num_rx=%d", num_rx);
 
 	return num_rx;
 }
@@ -297,8 +296,6 @@ static void uart_bee_irq_tx_enable(const struct device *dev)
 	const struct uart_bee_config *config = dev->config;
 	UART_TypeDef *uart = config->uart;
 	struct uart_bee_data *data = dev->data;
-
-	LOG_DBG("[%s]", __func__);
 
 	data->tx_int_en = true;
 	UART_INTConfig(uart, UART_INT_TX_FIFO_EMPTY, ENABLE);
@@ -310,11 +307,8 @@ static void uart_bee_irq_tx_disable(const struct device *dev)
 	UART_TypeDef *uart = config->uart;
 	struct uart_bee_data *data = dev->data;
 
-	LOG_DBG("[%s]", __func__);
-
 	data->tx_int_en = false;
 	UART_INTConfig(uart, UART_INT_TX_FIFO_EMPTY, DISABLE);
-
 }
 
 static int uart_bee_irq_tx_ready(const struct device *dev)
@@ -322,8 +316,6 @@ static int uart_bee_irq_tx_ready(const struct device *dev)
 	const struct uart_bee_config *config = dev->config;
 	struct uart_bee_data *data = dev->data;
 	UART_TypeDef *uart = config->uart;
-
-	LOG_DBG("[%s]", __func__);
 
 	return UART_GetFlagStatus(uart, UART_FLAG_TX_EMPTY) && data->tx_int_en;
 }
@@ -339,8 +331,6 @@ static void uart_bee_irq_rx_enable(const struct device *dev)
 	UART_TypeDef *uart = config->uart;
 	struct uart_bee_data *data = dev->data;
 
-	LOG_DBG("[%s]", __func__);
-
 	data->rx_int_en = true;
 	UART_INTConfig(uart, UART_INT_RD_AVA, ENABLE);
 	UART_INTConfig(uart, UART_INT_RX_IDLE, ENABLE);
@@ -351,8 +341,6 @@ static void uart_bee_irq_rx_disable(const struct device *dev)
 	const struct uart_bee_config *config = dev->config;
 	UART_TypeDef *uart = config->uart;
 	struct uart_bee_data *data = dev->data;
-
-	LOG_DBG("[%s]", __func__);
 
 	data->rx_int_en = false;
 	UART_INTConfig(uart, UART_INT_RD_AVA, DISABLE);
@@ -365,8 +353,6 @@ static int uart_bee_irq_rx_ready(const struct device *dev)
 	UART_TypeDef *uart = config->uart;
 	struct uart_bee_data *data;
 	int status;
-
-	LOG_DBG("[%s]", __func__);
 
 	status = UART_GetFlagStatus(uart, UART_FLAG_RX_DATA_AVA);
 
@@ -383,8 +369,6 @@ static void uart_bee_irq_err_enable(const struct device *dev)
 
 	data = dev->data;
 
-	LOG_DBG("[%s]", __func__);
-
 	UART_INTConfig(uart, UART_INT_RX_LINE_STS, ENABLE);
 }
 
@@ -396,8 +380,6 @@ static void uart_bee_irq_err_disable(const struct device *dev)
 
 	data = dev->data;
 
-	LOG_DBG("[%s]", __func__);
-
 	UART_INTConfig(uart, UART_INT_RX_LINE_STS, DISABLE);
 }
 
@@ -406,8 +388,6 @@ static int uart_bee_irq_is_pending(const struct device *dev)
 	const struct uart_bee_config *config = dev->config;
 	struct uart_bee_data *data = dev->data;
 	UART_TypeDef *uart = config->uart;
-
-	LOG_DBG("[%s]", __func__);
 
 	return ((UART_GetFlagStatus(uart, UART_FLAG_TX_EMPTY) && data->tx_int_en) ||
 		(UART_GetFlagStatus(uart, UART_INT_RD_AVA) && data->rx_int_en));
@@ -422,8 +402,6 @@ static void uart_bee_irq_callback_set(const struct device *dev, uart_irq_callbac
 				      void *cb_data)
 {
 	struct uart_bee_data *data = dev->data;
-
-	LOG_DBG("[%s]", __func__);
 
 	data->user_cb = cb;
 	data->user_data = cb_data;
@@ -453,8 +431,7 @@ int uart_bee_drv_cmd(const struct device *dev, uint32_t cmd, uint32_t p)
 }
 #endif
 
-#if defined(CONFIG_UART_INTERRUPT_DRIVEN)
-
+#ifdef CONFIG_UART_INTERRUPT_DRIVEN
 static void uart_bee_isr(const struct device *dev)
 {
 	struct uart_bee_data *data = dev->data;
@@ -473,7 +450,37 @@ static void uart_bee_isr(const struct device *dev)
 }
 #endif /* CONFIG_UART_INTERRUPT_DRIVEN */
 
-static const struct uart_driver_api uart_bee_driver_api = {
+static int uart_bee_init(const struct device *dev)
+{
+	const struct uart_bee_config *config = dev->config;
+	struct uart_bee_data *data = dev->data;
+	int err;
+
+	data->dev = dev;
+
+	/* Configure pinmux  */
+	err = pinctrl_apply_state(config->pcfg, PINCTRL_STATE_DEFAULT);
+	if (err < 0) {
+		return err;
+	}
+
+	(void)clock_control_on(BEE_CLOCK_CONTROLLER, (clock_control_subsys_t)&config->clkid);
+
+	/* Configure peripheral  */
+	err = uart_bee_configure(dev, &data->uart_config);
+	if (err) {
+		return err;
+	}
+
+	/* Enable nvic */
+#ifdef CONFIG_UART_INTERRUPT_DRIVEN
+	config->irq_config_func(dev);
+#endif /* CONFIG_UART_INTERRUPT_DRIVEN */
+
+	return 0;
+}
+
+static DEVICE_API(uart, uart_bee_driver_api) = {
 	.poll_in = uart_bee_poll_in,
 	.poll_out = uart_bee_poll_out,
 	.err_check = uart_bee_err_check,
@@ -509,38 +516,7 @@ static const struct uart_driver_api uart_bee_driver_api = {
 #endif
 };
 
-static int uart_bee_init(const struct device *dev)
-{
-	const struct uart_bee_config *config = dev->config;
-	struct uart_bee_data *data = dev->data;
-	int err;
-
-	LOG_DBG("[%s]", __func__);
-	data->dev = dev;
-
-	/* Configure pinmux  */
-	err = pinctrl_apply_state(config->pcfg, PINCTRL_STATE_DEFAULT);
-	if (err < 0) {
-		return err;
-	}
-
-	(void)clock_control_on(BEE_CLOCK_CONTROLLER, (clock_control_subsys_t)&config->clkid);
-
-	/* Configure peripheral  */
-	err = uart_bee_configure(dev, &data->uart_config);
-	if (err) {
-		return err;
-	}
-
-	/* Enable nvic */
-#if defined(CONFIG_UART_INTERRUPT_DRIVEN)
-	config->irq_config_func(dev);
-#endif /* CONFIG_UART_INTERRUPT_DRIVEN */
-
-	return 0;
-}
-
-#if defined(CONFIG_UART_INTERRUPT_DRIVEN)
+#ifdef CONFIG_UART_INTERRUPT_DRIVEN
 #define BEE_UART_IRQ_HANDLER_DECL(index)                                                           \
 	static void uart_bee_irq_config_func_##index(const struct device *dev);
 #define BEE_UART_IRQ_HANDLER(index)                                                                \
@@ -555,7 +531,7 @@ static int uart_bee_init(const struct device *dev)
 #define BEE_UART_IRQ_HANDLER(index)      /* Not used */
 #endif
 
-#if defined(CONFIG_UART_INTERRUPT_DRIVEN)
+#ifdef CONFIG_UART_INTERRUPT_DRIVEN
 #define BEE_UART_IRQ_HANDLER_FUNC(index) .irq_config_func = uart_bee_irq_config_func_##index,
 #else
 #define BEE_UART_IRQ_HANDLER_FUNC(index) /* Not used */
