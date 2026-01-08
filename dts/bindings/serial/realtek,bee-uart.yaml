@@ -29,4 +29,4 @@ properties:
   flow-ctrl:
     type: boolean
     description: |
-      Enable cts and rts or not.
+      Enable CTS and RTS or not.
