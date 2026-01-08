@@ -13,9 +13,7 @@
 #include <zephyr/devicetree.h>
 #include <zephyr/drivers/clock_control.h>
 
-#if defined(CONFIG_SOC_SERIES_RTL87X2G)
 #include <rtl_rcc.h>
-#endif
 
 #include <zephyr/logging/log.h>
 
@@ -30,7 +28,6 @@ struct apb_cfg {
 	uint32_t apbperiph_clk;
 };
 
-#if defined(CONFIG_SOC_SERIES_RTL87X2G)
 static const struct apb_cfg bee_apb_table[] = {
 	{APBPeriph_SPIC0, APBPeriph_SPIC0_CLOCK},
 	{APBPeriph_SPIC1, APBPeriph_SPIC1_CLOCK},
@@ -79,7 +76,6 @@ static const struct apb_cfg bee_apb_table[] = {
 	{APBPeriph_I2S1, APBPeriph_I2S1_CLOCK},
 	{APBPeriph_I2S0, APBPeriph_I2S0_CLOCK},
 };
-#endif
 
 static int clock_control_bee_on(const struct device *dev, clock_control_subsys_t sys)
 {
@@ -102,7 +98,6 @@ static int clock_control_bee_off(const struct device *dev, clock_control_subsys_
 	return 0;
 }
 
-#if defined(CONFIG_SOC_SERIES_RTL87X2G)
 static enum clock_control_status clock_control_bee_get_status(const struct device *dev,
 							      clock_control_subsys_t sys)
 {
@@ -126,14 +121,11 @@ static enum clock_control_status clock_control_bee_get_status(const struct devic
 	LOG_DBG("sys=%d, status=off", id);
 	return CLOCK_CONTROL_STATUS_OFF;
 }
-#endif
 
 static DEVICE_API(clock_control, clock_control_bee_api) = {
 	.on = clock_control_bee_on,
 	.off = clock_control_bee_off,
-#if defined(CONFIG_SOC_SERIES_RTL87X2G)
 	.get_status = clock_control_bee_get_status,
-#endif
 };
 
 static const struct clock_control_bee_config config = {
