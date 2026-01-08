@@ -31,6 +31,12 @@
 		};
 	};
 
+	sysclk: system-clock {
+		compatible = "fixed-clock";
+		clock-frequency = <DT_FREQ_K(32)>;
+		#clock-cells = <0>;
+	};
+
 	data_ram {
 		#address-cells = <1>;
 		#size-cells = <1>;
@@ -56,7 +62,6 @@
 		cctl: clock-controller@40000200 {
 			compatible = "realtek,bee-cctl";
 			reg = <0x40000200 0x400>;
-			status = "okay";
 			#clock-cells = <1>;
 			status = "okay";
 		};
@@ -78,7 +83,7 @@
 					#address-cells = <1>;
 					#size-cells = <1>;
 
-					rsvd_partition: partition@0000 {
+					rsvd_partition: partition@0 {
 						label = "rsvd";
 						reg = <0x0 DT_SIZE_K(4)>;
 					};
@@ -90,7 +95,7 @@
 
 					ota_header_partition: partition@2000 {
 						label = "ota-header";
-						reg = <0x1000 DT_SIZE_K(4)>;
+						reg = <0x2000 DT_SIZE_K(4)>;
 					};
 
 					rom_patch_partition: partition@3000 {
