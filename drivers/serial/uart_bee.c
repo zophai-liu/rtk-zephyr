@@ -18,9 +18,7 @@
 #include <zephyr/drivers/clock_control.h>
 #include <zephyr/irq.h>
 
-#if defined(CONFIG_SOC_SERIES_RTL8752H)
 #include <rtl876x_uart.h>
-#endif
 
 #include <zephyr/logging/log.h>
 
