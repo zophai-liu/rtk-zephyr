@@ -6,17 +6,13 @@
 
 #include <zephyr/drivers/pinctrl.h>
 
-#if defined(CONFIG_SOC_SERIES_RTL8752H)
 #include <rtl876x_pinmux.h>
-#endif
 
-#if defined(CONFIG_SOC_SERIES_RTL8752H)
 #define bee_pad_set_pull(pin, stre)       Pad_PullConfigValue(pin, stre)
 #define BEE_DRIVING_LEVEL0 PAD_DRIVING_CURRENT_8_8mA
 #define BEE_DRIVING_LEVEL1 PAD_DRIVING_CURRENT_12_18mA
 #define BEE_DRIVING_LEVEL2 PAD_DRIVING_CURRENT_16_28mA
 #define BEE_DRIVING_LEVEL3 PAD_DRIVING_CURRENT_16_28mA
-#endif
 
 static void pinctrl_configure_pin(const pinctrl_soc_pin_t *pin)
 {
