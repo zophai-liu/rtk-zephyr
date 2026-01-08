@@ -7,17 +7,6 @@
 #ifndef ZEPHYR_INCLUDE_DT_BINDINGS_CLOCK_RTL87X2G_CLOCKS_H_
 #define ZEPHYR_INCLUDE_DT_BINDINGS_CLOCK_RTL87X2G_CLOCKS_H_
 
-/**
- * @name Register offsets
- * @{
- */
-
-/** @} */
-
-/**
- * @name Clock enable/disable definitions for peripherals
- * @{
- */
 #define APB_CLK(peri)       APBPeriph_##peri##_CLOCK
 
 #define APBPeriph_SPIC0_CLOCK              0U
@@ -66,7 +55,5 @@
 #define APBPeriph_CODEC_CLOCK              43U
 #define APBPeriph_I2S1_CLOCK               44U
 #define APBPeriph_I2S0_CLOCK               45U
-
-/** @} */
 
 #endif /* ZEPHYR_INCLUDE_DT_BINDINGS_CLOCK_RTL87X2G_CLOCKS_H_ */

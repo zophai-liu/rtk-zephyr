@@ -7,6 +7,7 @@
 #define DT_DRV_COMPAT realtek_bee_cctl
 
 #include <stdint.h>
+
 #include <zephyr/arch/cpu.h>
 #include <zephyr/device.h>
 #include <zephyr/devicetree.h>
@@ -17,19 +18,20 @@
 #endif
 
 #include <zephyr/logging/log.h>
-LOG_MODULE_REGISTER(ir_bee, CONFIG_CLOCK_CONTROL_LOG_LEVEL);
+
+LOG_MODULE_REGISTER(clock_control_bee, CONFIG_CLOCK_CONTROL_LOG_LEVEL);
 
 struct clock_control_bee_config {
 	uint32_t reg;
 };
 
-typedef struct {
+struct apb_cfg {
 	uint32_t apbperiph;
 	uint32_t apbperiph_clk;
-} apb_cfg;
+};
 
 #if defined(CONFIG_SOC_SERIES_RTL87X2G)
-static const apb_cfg bee_apb_table[] = {
+static const struct apb_cfg bee_apb_table[] = {
 	{APBPeriph_SPIC0, APBPeriph_SPIC0_CLOCK},
 	{APBPeriph_SPIC1, APBPeriph_SPIC1_CLOCK},
 	{APBPeriph_SPIC2, APBPeriph_SPIC2_CLOCK},
@@ -84,7 +86,7 @@ static int clock_control_bee_on(const struct device *dev, clock_control_subsys_t
 	uint16_t id = *(uint16_t *)sys;
 
 	RCC_PeriphClockCmd(bee_apb_table[id].apbperiph, bee_apb_table[id].apbperiph_clk, ENABLE);
-	LOG_DBG("[%s] sys=%d, apbperiph=0x%x, apbperiph_clk=0x%x", __func__, id,
+	LOG_DBG("sys=%d, apbperiph=0x%x, apbperiph_clk=0x%x", id,
 		   bee_apb_table[id].apbperiph, bee_apb_table[id].apbperiph_clk);
 	return 0;
 }
@@ -95,7 +97,7 @@ static int clock_control_bee_off(const struct device *dev, clock_control_subsys_
 
 	RCC_PeriphClockCmd(bee_apb_table[id].apbperiph, bee_apb_table[id].apbperiph_clk, DISABLE);
 
-	LOG_DBG("[%s] sys=%d, apbperiph=%d, apbperiph_clk=%d", __func__, id,
+	LOG_DBG("sys=%d, apbperiph=%d, apbperiph_clk=%d", id,
 		   bee_apb_table[id].apbperiph, bee_apb_table[id].apbperiph_clk);
 	return 0;
 }
@@ -107,26 +109,26 @@ static enum clock_control_status clock_control_bee_get_status(const struct devic
 	const struct clock_control_bee_config *config = dev->config;
 	uint16_t id = *(uint16_t *)sys;
 
-	uint32_t apbRegOff = (bee_apb_table[id].apbperiph & (0XFF));
+	uint32_t apb_reg_off = (bee_apb_table[id].apbperiph & (0xff));
 	uint32_t clk_func = bee_apb_table[id].apbperiph_clk;
 
 	if (bee_apb_table[id].apbperiph == APBPeriph_CODEC) {
-		if (sys_test_bit(PERIBLKCTRL_AUDIO_REG_BASE + apbRegOff, clk_func) != 0) {
+		if (sys_test_bit(PERIBLKCTRL_AUDIO_REG_BASE + apb_reg_off, clk_func) != 0) {
 			return CLOCK_CONTROL_STATUS_ON;
 		}
 	} else {
-		if (sys_test_bit(config->reg + apbRegOff, clk_func) != 0) {
-			LOG_DBG("[%s] sys=%d, status=on", __func__, id);
+		if (sys_test_bit(config->reg + apb_reg_off, clk_func) != 0) {
+			LOG_DBG("sys=%d, status=on", id);
 			return CLOCK_CONTROL_STATUS_ON;
 		}
 	}
 
-	LOG_DBG("[%s] sys=%d, status=off", __func__, id);
+	LOG_DBG("sys=%d, status=off", id);
 	return CLOCK_CONTROL_STATUS_OFF;
 }
 #endif
 
-static struct clock_control_driver_api clock_control_bee_api = {
+static DEVICE_API(clock_control, clock_control_bee_api) = {
 	.on = clock_control_bee_on,
 	.off = clock_control_bee_off,
 #if defined(CONFIG_SOC_SERIES_RTL87X2G)
