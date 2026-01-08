@@ -7,6 +7,7 @@
 #define DT_DRV_COMPAT realtek_bee_cctl
 
 #include <stdint.h>
+
 #include <zephyr/arch/cpu.h>
 #include <zephyr/device.h>
 #include <zephyr/devicetree.h>
@@ -17,19 +18,20 @@
 #endif
 
 #include <zephyr/logging/log.h>
-LOG_MODULE_REGISTER(ir_bee, CONFIG_CLOCK_CONTROL_LOG_LEVEL);
+
+LOG_MODULE_REGISTER(clock_control_bee, CONFIG_CLOCK_CONTROL_LOG_LEVEL);
 
 struct clock_control_bee_config {
 	uint32_t reg;
 };
 
-typedef struct {
+struct apb_cfg {
 	uint32_t apbperiph;
 	uint32_t apbperiph_clk;
-} apb_cfg;
+};
 
 #if defined(CONFIG_SOC_SERIES_RTL8752H)
-static const apb_cfg bee_apb_table[] = {
+static const struct apb_cfg bee_apb_table[] = {
 	{APBPeriph_I2S0, APBPeriph_I2S0_CLOCK},
 	{APBPeriph_I2S1, APBPeriph_I2S1_CLOCK},
 	{APBPeriph_CODEC, APBPeriph_CODEC_CLOCK},
@@ -66,7 +68,7 @@ static int clock_control_bee_on(const struct device *dev, clock_control_subsys_t
 	uint16_t id = *(uint16_t *)sys;
 
 	RCC_PeriphClockCmd(bee_apb_table[id].apbperiph, bee_apb_table[id].apbperiph_clk, ENABLE);
-	LOG_DBG("[%s] sys=%d, apbperiph=0x%x, apbperiph_clk=0x%x", __func__, id,
+	LOG_DBG("sys=%d, apbperiph=0x%x, apbperiph_clk=0x%x", id,
 		   bee_apb_table[id].apbperiph, bee_apb_table[id].apbperiph_clk);
 	return 0;
 }
@@ -77,12 +79,12 @@ static int clock_control_bee_off(const struct device *dev, clock_control_subsys_
 
 	RCC_PeriphClockCmd(bee_apb_table[id].apbperiph, bee_apb_table[id].apbperiph_clk, DISABLE);
 
-	LOG_DBG("[%s] sys=%d, apbperiph=%d, apbperiph_clk=%d", __func__, id,
+	LOG_DBG("sys=%d, apbperiph=%d, apbperiph_clk=%d", id,
 		   bee_apb_table[id].apbperiph, bee_apb_table[id].apbperiph_clk);
 	return 0;
 }
 
-static struct clock_control_driver_api clock_control_bee_api = {
+static DEVICE_API(clock_control, clock_control_bee_api) = {
 	.on = clock_control_bee_on,
 	.off = clock_control_bee_off,
 };
