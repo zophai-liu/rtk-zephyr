@@ -13,9 +13,7 @@
 #include <zephyr/devicetree.h>
 #include <zephyr/drivers/clock_control.h>
 
-#if defined(CONFIG_SOC_SERIES_RTL8752H)
 #include <rtl876x_rcc.h>
-#endif
 
 #include <zephyr/logging/log.h>
 
@@ -30,7 +28,6 @@ struct apb_cfg {
 	uint32_t apbperiph_clk;
 };
 
-#if defined(CONFIG_SOC_SERIES_RTL8752H)
 static const struct apb_cfg bee_apb_table[] = {
 	{APBPeriph_I2S0, APBPeriph_I2S0_CLOCK},
 	{APBPeriph_I2S1, APBPeriph_I2S1_CLOCK},
@@ -61,7 +58,6 @@ static const struct apb_cfg bee_apb_table[] = {
 	{APBPeriph_I2C1, APBPeriph_I2C1_CLOCK},
 	{APBPeriph_I2C0, APBPeriph_I2C0_CLOCK},
 };
-#endif
 
 static int clock_control_bee_on(const struct device *dev, clock_control_subsys_t sys)
 {
