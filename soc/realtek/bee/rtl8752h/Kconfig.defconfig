@@ -5,8 +5,7 @@ if SOC_SERIES_RTL8752H
 
 # specifies the frequency of the hardware timer used for the system clock (in Hz)
 config SYS_CLOCK_HW_CYCLES_PER_SEC
-	int
-	default 32000
+	default $(dt_node_int_prop_int,/system-clock,clock-frequency)
 
 config NUM_IRQS
 	int

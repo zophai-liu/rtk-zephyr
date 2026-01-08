@@ -8,6 +8,11 @@
 #include <clock_manager.h>
 #include <system_rtl876x.h>
 
+#ifdef CONFIG_SYSTICK_USE_EXTERNAL_CLOCK
+/* The system clock frequency of RTL8752H is fixed at 32,000 Hz. */
+BUILD_ASSERT(CONFIG_SYS_CLOCK_HW_CYCLES_PER_SEC == 32000);
+#endif
+
 static int rtl8752h_platform_init(void)
 {
 	si_flow_data_init();
@@ -34,14 +39,7 @@ static int rtl8752h_platform_init(void)
 static int rtl8752h_sysclock_update(void)
 {
 #ifdef CONFIG_SYSTICK_USE_EXTERNAL_CLOCK
-#if (CONFIG_SYS_CLOCK_HW_CYCLES_PER_SEC != 32000)
-#error "CONFIG_SYSTICK_USE_EXTERNAL_CLOCK does not match CONFIG_SYS_CLOCK_TICKS_PER_SEC"
-#endif
 	SysTick->CTRL &= ~SysTick_CTRL_CLKSOURCE_Msk;
-#else
-#if (CONFIG_SYS_CLOCK_HW_CYCLES_PER_SEC != 40000000)
-#error "CPU Clock Rate does not match CONFIG_SYS_CLOCK_TICKS_PER_SEC"
-#endif
 #endif /* CONFIG_SYSTICK_USE_EXTERNAL_CLOCK */
 	return 0;
 }
