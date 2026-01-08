@@ -6,17 +6,13 @@
 
 #include <zephyr/drivers/pinctrl.h>
 
-#if defined(CONFIG_SOC_SERIES_RTL87X2G)
 #include <rtl_pinmux.h>
-#endif
 
-#if defined(CONFIG_SOC_SERIES_RTL87X2G)
 #define bee_pad_set_pull(pin, stre)       Pad_SetPullStrength(pin, stre)
 #define BEE_DRIVING_LEVEL0 LEVEL0
 #define BEE_DRIVING_LEVEL1 LEVEL1
 #define BEE_DRIVING_LEVEL2 LEVEL2
 #define BEE_DRIVING_LEVEL3 LEVEL3
-#endif
 
 static void pinctrl_configure_pin(const pinctrl_soc_pin_t *pin)
 {
@@ -62,7 +58,6 @@ static void pinctrl_configure_pin(const pinctrl_soc_pin_t *pin)
 		Pad_Config(cfg_pin, PAD_PINMUX_MODE, PAD_IS_PWRON, cfg_pull, cfg_dir, cfg_drv);
 		Pinmux_Config(cfg_pin, cfg_fun);
 	} else if (cfg_fun > BEE_PWR_OFF) {
-#if defined(CONFIG_SOC_SERIES_RTL87X2G)
 		if (cfg_fun <= BEE_SDHC1_D7_P4_7) {
 			Pad_Config(cfg_pin, PAD_PINMUX_MODE, PAD_IS_PWRON, cfg_pull, cfg_dir,
 				   cfg_drv);
@@ -73,7 +68,6 @@ static void pinctrl_configure_pin(const pinctrl_soc_pin_t *pin)
 				   cfg_drv);
 			Pinmux_AON_Config(cfg_fun);
 		}
-#endif
 	}
 }
 
