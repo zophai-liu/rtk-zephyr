@@ -26,7 +26,7 @@
  *
  * The wakeup flag is a Zephyr specific extension of the standard GPIO flags
  * specified by the Linux GPIO binding. Only applicable for Realtek bee SoCs.
- * Notes: gpio wakeup only support those gpios configured as level interrupt.
+ * Notes: GPIO wakeup only support those GPIOs configured as level interrupt.
  */
 #define BEE_GPIO_INPUT_PM_WAKEUP (1 << 7)
 

@@ -32,6 +32,8 @@
 #include <zephyr/drivers/gpio/gpio_utils.h>
 #include <zephyr/logging/log.h>
 
+LOG_MODULE_REGISTER(gpio_bee, CONFIG_GPIO_LOG_LEVEL);
+
 #if defined(CONFIG_SOC_SERIES_RTL8752H)
 #define BEE_GPIO_WriteBit(port, bit, val)            GPIO_WriteBit(bit, val)
 #define BEE_GPIO_ReadOutputData(port)                GPIO_ReadOutputData()
@@ -47,8 +49,6 @@
 #define BEE_Pad_SetControlMode(pad, mode)            Pad_ControlSelectValue(pad, mode)
 #define BEE_Pad_SetOutputLevel(pad, val)             Pad_OutputControlValue(pad, val)
 #endif
-
-LOG_MODULE_REGISTER(gpio_bee, CONFIG_GPIO_LOG_LEVEL);
 
 struct gpio_bee_irq_info {
 	const struct device *irq_dev;
@@ -100,7 +100,7 @@ static int gpio_bee_gpio2pad(uint8_t port_num, uint32_t pin)
 	} else if (pin == 31) {
 		return 35;
 	}
-#endif
+#endif /* CONFIG_SOC_SERIES_RTL8752H */
 
 	return -EIO;
 }
@@ -119,7 +119,7 @@ static int gpio_bee_pin_configure(const struct device *port, gpio_pin_t pin, gpi
 		(flags & BEE_GPIO_INPUT_DEBOUNCE_MS_MASK) >> BEE_GPIO_INPUT_DEBOUNCE_MS_POS;
 	int ret = 0;
 
-	LOG_DBG("port=%s, pin=%d, flags=0x%x, line%d\n", port->name, pin, flags, __LINE__);
+	LOG_DBG("port=%s, pin=%d, flags=0x%x, line%d", port->name, pin, flags, __LINE__);
 
 	port_base = config->port_base;
 
@@ -189,7 +189,7 @@ static int gpio_bee_pin_configure(const struct device *port, gpio_pin_t pin, gpi
 			BEE_GPIO_Init(port_base, &gpio_init_struct);
 			BEE_GPIO_MaskINTConfig(port_base, gpio_bit, ENABLE);
 			BEE_GPIO_INTConfig(port_base, gpio_bit, ENABLE);
-			k_busy_wait(data->pin_debounce_ms[pin] * 2 * 1000);
+			k_busy_wait(data->pin_debounce_ms[pin] * 2 * USEC_PER_MSEC);
 			BEE_GPIO_ClearINTPendingBit(port_base, gpio_bit);
 			BEE_GPIO_MaskINTConfig(port_base, gpio_bit, DISABLE);
 		} else {
@@ -269,9 +269,9 @@ static int gpio_bee_port_toggle_bits(const struct device *port, gpio_port_pins_t
 
 	uint32_t pins_value = BEE_GPIO_ReadInputData(port_base);
 
-	pins_value = (pins_value | pins) & ~(pins_value & pins);
+	pins_value = pins_value ^ pins;
 	BEE_GPIO_Write(port_base, pins_value);
-	LOG_DBG("port=%s, pin=0x%x, pins_value=0x%x, line%d\n", port->name, pins, pins_value,
+	LOG_DBG("port=%s, pin=0x%x, pins_value=0x%x, line%d", port->name, pins, pins_value,
 		__LINE__);
 
 	return 0;
@@ -288,7 +288,7 @@ static int gpio_bee_pin_interrupt_configure(const struct device *port, gpio_pin_
 
 	port_base = config->port_base;
 
-	LOG_DBG("port=%s, pin=%d, mode=0x%x, trig=0x%x, line%d\n", port->name, pin, mode, trig,
+	LOG_DBG("port=%s, pin=%d, mode=0x%x, trig=0x%x, line%d", port->name, pin, mode, trig,
 		__LINE__);
 
 #ifdef CONFIG_GPIO_ENABLE_DISABLE_INTERRUPT
@@ -350,7 +350,7 @@ static int gpio_bee_pin_interrupt_configure(const struct device *port, gpio_pin_
 
 	/* to avoid trigger gpio interrupt */
 	if (data->pin_debounce_ms[pin]) {
-		k_busy_wait(data->pin_debounce_ms[pin] * 2 * 1000);
+		k_busy_wait(data->pin_debounce_ms[pin] * 2 * USEC_PER_MSEC);
 	}
 
 	BEE_GPIO_ClearINTPendingBit(port_base, gpio_bit);
@@ -394,21 +394,6 @@ int gpio_bee_port_get_direction(const struct device *port, gpio_port_pins_t map,
 }
 #endif
 
-static const struct gpio_driver_api gpio_bee_driver_api = {
-	.pin_configure = gpio_bee_pin_configure,
-	.port_get_raw = gpio_bee_port_get_raw,
-	.port_set_masked_raw = gpio_bee_port_set_masked_raw,
-	.port_set_bits_raw = gpio_bee_port_set_bits_raw,
-	.port_clear_bits_raw = gpio_bee_port_clear_bits_raw,
-	.port_toggle_bits = gpio_bee_port_toggle_bits,
-	.pin_interrupt_configure = gpio_bee_pin_interrupt_configure,
-	.manage_callback = gpio_bee_manage_callback,
-	.get_pending_int = gpio_bee_get_pending_int,
-#ifdef CONFIG_GPIO_GET_DIRECTION
-	.port_get_direction = gpio_bee_port_get_direction,
-#endif
-};
-
 static void gpio_bee_isr(void *arg)
 {
 	const struct device *dev = (struct device *)arg;
@@ -447,6 +432,21 @@ static int gpio_bee_init(const struct device *dev)
 
 	return ret;
 }
+
+static DEVICE_API(gpio, gpio_bee_driver_api) = {
+	.pin_configure = gpio_bee_pin_configure,
+	.port_get_raw = gpio_bee_port_get_raw,
+	.port_set_masked_raw = gpio_bee_port_set_masked_raw,
+	.port_set_bits_raw = gpio_bee_port_set_bits_raw,
+	.port_clear_bits_raw = gpio_bee_port_clear_bits_raw,
+	.port_toggle_bits = gpio_bee_port_toggle_bits,
+	.pin_interrupt_configure = gpio_bee_pin_interrupt_configure,
+	.manage_callback = gpio_bee_manage_callback,
+	.get_pending_int = gpio_bee_get_pending_int,
+#ifdef CONFIG_GPIO_GET_DIRECTION
+	.port_get_direction = gpio_bee_port_get_direction,
+#endif
+};
 
 #define GPIO_BEE_SET_GPIO_IRQ_INFO(irq_idx, index)                                                 \
 	{                                                                                          \
