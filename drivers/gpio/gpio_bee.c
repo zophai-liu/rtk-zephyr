@@ -23,18 +23,15 @@
 #undef GPIO_INT_MASK
 #endif
 
-#if defined(CONFIG_SOC_SERIES_RTL87X2G)
 #include <rtl_rcc.h>
 #include <rtl_pinmux.h>
 #include <rtl_gpio.h>
-#endif
 
 #include <zephyr/drivers/gpio/gpio_utils.h>
 #include <zephyr/logging/log.h>
 
 LOG_MODULE_REGISTER(gpio_bee, CONFIG_GPIO_LOG_LEVEL);
 
-#if defined(CONFIG_SOC_SERIES_RTL87X2G)
 #define BEE_GPIO_WriteBit(port, bit, val)            GPIO_WriteBit(port, bit, val)
 #define BEE_GPIO_ReadOutputData(port)                GPIO_ReadOutputData(port)
 #define BEE_GPIO_ReadOutputDataBit(port, bit)        GPIO_ReadOutputDataBit(port, bit)
@@ -49,7 +46,6 @@ LOG_MODULE_REGISTER(gpio_bee, CONFIG_GPIO_LOG_LEVEL);
 #define BEE_Pad_SetControlMode(pad, mode)            Pad_SetControlMode(pad, mode)
 #define BEE_Pad_SetOutputLevel(pad, val)             Pad_SetOutputLevel(pad, val)
 extern uint32_t GPIO_SwapDebPinBit(GPIO_TypeDef *GPIOx, uint32_t GPIO_Pin);
-#endif
 
 struct gpio_bee_irq_info {
 	const struct device *irq_dev;
@@ -77,7 +73,6 @@ struct gpio_bee_data {
 
 static int gpio_bee_gpio2pad(uint8_t port_num, uint32_t pin)
 {
-#if defined(CONFIG_SOC_SERIES_RTL87X2G)
 	/* There is no reuse situation for gpioa */
 	if (port_num == 0) {
 		if (pin < 16) {
@@ -148,7 +143,6 @@ static int gpio_bee_gpio2pad(uint8_t port_num, uint32_t pin)
 		}
 #endif
 	}
-#endif /* CONFIG_SOC_SERIES_RTL87X2G */
 
 	return -EIO;
 }
@@ -196,11 +190,9 @@ static int gpio_bee_pin_configure(const struct device *port, gpio_pin_t pin, gpi
 		GPIO_StructInit(&gpio_init_struct);
 
 		if (debounce_ms) {
-#if defined(CONFIG_SOC_SERIES_RTL87X2G)
 			gpio_init_struct.GPIO_DebounceClkSource = GPIO_DEBOUNCE_32K;
 			gpio_init_struct.GPIO_DebounceClkDiv = GPIO_DEBOUNCE_DIVIDER_32;
 			gpio_init_struct.GPIO_DebounceCntLimit = debounce_ms;
-#endif
 			gpio_init_struct.GPIO_ITDebounce = GPIO_INT_DEBOUNCE_ENABLE;
 			data->pin_debounce_ms[pin] = debounce_ms;
 		} else {
@@ -210,10 +202,8 @@ static int gpio_bee_pin_configure(const struct device *port, gpio_pin_t pin, gpi
 
 		gpio_init_struct.GPIO_Pin = gpio_bit;
 		gpio_init_struct.GPIO_Mode = flags & GPIO_OUTPUT ? GPIO_Mode_OUT : GPIO_Mode_IN;
-#if defined(CONFIG_SOC_SERIES_RTL87X2G)
 		gpio_init_struct.GPIO_OutPutMode =
 			flags & GPIO_OPEN_DRAIN ? GPIO_OUTPUT_OPENDRAIN : GPIO_OUTPUT_PUSHPULL;
-#endif
 		gpio_init_struct.GPIO_ITCmd = flags & GPIO_INT_ENABLE ? ENABLE : DISABLE;
 		gpio_init_struct.GPIO_ITTrigger = flags & GPIO_INT_LEVELS_LOGICAL
 							  ? GPIO_INT_Trigger_LEVEL
@@ -221,9 +211,7 @@ static int gpio_bee_pin_configure(const struct device *port, gpio_pin_t pin, gpi
 		gpio_init_struct.GPIO_ITPolarity = flags & GPIO_INT_LOW_0
 							   ? GPIO_INT_POLARITY_ACTIVE_LOW
 							   : GPIO_INT_POLARITY_ACTIVE_HIGH;
-#if defined(CONFIG_SOC_SERIES_RTL87X2G)
 		Pad_Dedicated_Config(pad_pin, DISABLE);
-#endif
 		Pad_Config(pad_pin, PAD_PINMUX_MODE, PAD_IS_PWRON, pull_config,
 			   flags & GPIO_OUTPUT ? PAD_OUT_ENABLE : PAD_OUT_DISABLE,
 			   flags & GPIO_OUTPUT_INIT_HIGH ? PAD_OUT_HIGH : PAD_OUT_LOW);
@@ -367,11 +355,9 @@ static int gpio_bee_pin_interrupt_configure(const struct device *port, gpio_pin_
 	gpio_init_struct.GPIO_Pin = gpio_bit;
 	gpio_init_struct.GPIO_Mode = GPIO_Mode_IN;
 	if (data->pin_debounce_ms[pin]) {
-#if defined(CONFIG_SOC_SERIES_RTL87X2G)
 		gpio_init_struct.GPIO_DebounceClkSource = GPIO_DEBOUNCE_32K;
 		gpio_init_struct.GPIO_DebounceClkDiv = GPIO_DEBOUNCE_DIVIDER_32;
 		gpio_init_struct.GPIO_DebounceCntLimit = data->pin_debounce_ms[pin];
-#endif
 		gpio_init_struct.GPIO_ITDebounce = GPIO_INT_DEBOUNCE_ENABLE;
 	} else {
 		gpio_init_struct.GPIO_ITDebounce = GPIO_INT_DEBOUNCE_DISABLE;
