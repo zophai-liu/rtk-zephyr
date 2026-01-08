@@ -23,18 +23,15 @@
 #undef GPIO_INT_MASK
 #endif
 
-#if defined(CONFIG_SOC_SERIES_RTL8752H)
 #include <rtl876x_rcc.h>
 #include <rtl876x_pinmux.h>
 #include <rtl876x_gpio.h>
-#endif
 
 #include <zephyr/drivers/gpio/gpio_utils.h>
 #include <zephyr/logging/log.h>
 
 LOG_MODULE_REGISTER(gpio_bee, CONFIG_GPIO_LOG_LEVEL);
 
-#if defined(CONFIG_SOC_SERIES_RTL8752H)
 #define BEE_GPIO_WriteBit(port, bit, val)            GPIO_WriteBit(bit, val)
 #define BEE_GPIO_ReadOutputData(port)                GPIO_ReadOutputData()
 #define BEE_GPIO_ReadOutputDataBit(port, bit)        GPIO_ReadOutputDataBit(bit)
@@ -48,7 +45,6 @@ LOG_MODULE_REGISTER(gpio_bee, CONFIG_GPIO_LOG_LEVEL);
 #define BEE_GPIO_Write(port, val)                    GPIO_Write(val)
 #define BEE_Pad_SetControlMode(pad, mode)            Pad_ControlSelectValue(pad, mode)
 #define BEE_Pad_SetOutputLevel(pad, val)             Pad_OutputControlValue(pad, val)
-#endif
 
 struct gpio_bee_irq_info {
 	const struct device *irq_dev;
@@ -76,7 +72,6 @@ struct gpio_bee_data {
 
 static int gpio_bee_gpio2pad(uint8_t port_num, uint32_t pin)
 {
-#if defined(CONFIG_SOC_SERIES_RTL8752H)
 	if (pin <= 9) {
 		return pin;
 	} else if (pin <= 12) {
@@ -100,7 +95,6 @@ static int gpio_bee_gpio2pad(uint8_t port_num, uint32_t pin)
 	} else if (pin == 31) {
 		return 35;
 	}
-#endif /* CONFIG_SOC_SERIES_RTL8752H */
 
 	return -EIO;
 }
@@ -148,9 +142,7 @@ static int gpio_bee_pin_configure(const struct device *port, gpio_pin_t pin, gpi
 		GPIO_StructInit(&gpio_init_struct);
 
 		if (debounce_ms) {
-#if defined(CONFIG_SOC_SERIES_RTL8752H)
 			gpio_init_struct.GPIO_DebounceTime = debounce_ms;
-#endif
 			gpio_init_struct.GPIO_ITDebounce = GPIO_INT_DEBOUNCE_ENABLE;
 			data->pin_debounce_ms[pin] = debounce_ms;
 		} else {
@@ -310,9 +302,7 @@ static int gpio_bee_pin_interrupt_configure(const struct device *port, gpio_pin_
 	gpio_init_struct.GPIO_Pin = gpio_bit;
 	gpio_init_struct.GPIO_Mode = GPIO_Mode_IN;
 	if (data->pin_debounce_ms[pin]) {
-#if defined(CONFIG_SOC_SERIES_RTL8752H)
 		gpio_init_struct.GPIO_DebounceTime = data->pin_debounce_ms[pin];
-#endif
 		gpio_init_struct.GPIO_ITDebounce = GPIO_INT_DEBOUNCE_ENABLE;
 	} else {
 		gpio_init_struct.GPIO_ITDebounce = GPIO_INT_DEBOUNCE_DISABLE;
