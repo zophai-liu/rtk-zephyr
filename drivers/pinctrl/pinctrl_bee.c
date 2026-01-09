@@ -8,12 +8,6 @@
 
 #include <rtl876x_pinmux.h>
 
-#define bee_pad_set_pull(pin, stre)       Pad_PullConfigValue(pin, stre)
-#define BEE_DRIVING_LEVEL0 PAD_DRIVING_CURRENT_8_8mA
-#define BEE_DRIVING_LEVEL1 PAD_DRIVING_CURRENT_12_18mA
-#define BEE_DRIVING_LEVEL2 PAD_DRIVING_CURRENT_16_28mA
-#define BEE_DRIVING_LEVEL3 PAD_DRIVING_CURRENT_16_28mA
-
 static void pinctrl_configure_pin(const pinctrl_soc_pin_t *pin)
 {
 	uint32_t cfg_fun = pin[0].fun;
@@ -25,24 +19,24 @@ static void pinctrl_configure_pin(const pinctrl_soc_pin_t *pin)
 	uint32_t current_level = pin[0].current_level;
 
 	/* set pull strength */
-	bee_pad_set_pull(cfg_pin, cfg_pull_strength);
+	Pad_PullConfigValue(cfg_pin, cfg_pull_strength);
 
 	/* set current level */
 	switch (current_level) {
 	case 0:
-		Pad_SetDrivingCurrent(cfg_pin, BEE_DRIVING_LEVEL0);
+		Pad_SetDrivingCurrent(cfg_pin, PAD_DRIVING_CURRENT_8_8mA);
 		break;
 
 	case 1:
-		Pad_SetDrivingCurrent(cfg_pin, BEE_DRIVING_LEVEL1);
+		Pad_SetDrivingCurrent(cfg_pin, PAD_DRIVING_CURRENT_12_18mA);
 		break;
 
 	case 2:
-		Pad_SetDrivingCurrent(cfg_pin, BEE_DRIVING_LEVEL2);
+		Pad_SetDrivingCurrent(cfg_pin, PAD_DRIVING_CURRENT_16_28mA);
 		break;
 
 	case 3:
-		Pad_SetDrivingCurrent(cfg_pin, BEE_DRIVING_LEVEL3);
+		Pad_SetDrivingCurrent(cfg_pin, PAD_DRIVING_CURRENT_16_28mA);
 		break;
 
 	default:
