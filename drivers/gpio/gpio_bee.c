@@ -32,21 +32,6 @@
 
 LOG_MODULE_REGISTER(gpio_bee, CONFIG_GPIO_LOG_LEVEL);
 
-#define BEE_GPIO_WriteBit(port, bit, val)            GPIO_WriteBit(port, bit, val)
-#define BEE_GPIO_ReadOutputData(port)                GPIO_ReadOutputData(port)
-#define BEE_GPIO_ReadOutputDataBit(port, bit)        GPIO_ReadOutputDataBit(port, bit)
-#define BEE_GPIO_INTConfig(port, bit, val)           GPIO_INTConfig(port, bit, val)
-#define BEE_GPIO_Init(port, val)                     GPIO_Init(port, val)
-#define BEE_GPIO_MaskINTConfig(port, bit, val)       GPIO_MaskINTConfig(port, bit, val)
-#define BEE_GPIO_ClearINTPendingBit(port, bit)       GPIO_ClearINTPendingBit(port, bit)
-#define BEE_GPIO_SetBits(port, bit)                  GPIO_SetBits(port, bit)
-#define BEE_GPIO_ResetBits(port, bit)                GPIO_ResetBits(port, bit)
-#define BEE_GPIO_ReadInputData(port)                 GPIO_ReadInputData(port)
-#define BEE_GPIO_Write(port, val)                    GPIO_Write(port, val)
-#define BEE_Pad_SetControlMode(pad, mode)            Pad_SetControlMode(pad, mode)
-#define BEE_Pad_SetOutputLevel(pad, val)             Pad_SetOutputLevel(pad, val)
-extern uint32_t GPIO_SwapDebPinBit(GPIO_TypeDef *GPIOx, uint32_t GPIO_Pin);
-
 struct gpio_bee_irq_info {
 	const struct device *irq_dev;
 	uint8_t num_irq;
@@ -219,10 +204,10 @@ static int gpio_bee_pin_configure(const struct device *port, gpio_pin_t pin, gpi
 
 		switch (flags & (GPIO_OUTPUT | GPIO_OUTPUT_INIT_HIGH | GPIO_OUTPUT_INIT_LOW)) {
 		case (GPIO_OUTPUT_HIGH):
-			BEE_GPIO_WriteBit(port_base, gpio_bit, 1);
+			GPIO_WriteBit(port_base, gpio_bit, 1);
 			break;
 		case (GPIO_OUTPUT_LOW):
-			BEE_GPIO_WriteBit(port_base, gpio_bit, 0);
+			GPIO_WriteBit(port_base, gpio_bit, 0);
 			break;
 		default:
 			break;
@@ -230,15 +215,15 @@ static int gpio_bee_pin_configure(const struct device *port, gpio_pin_t pin, gpi
 
 		/* to avoid trigger gpio interrupt */
 		if (debounce_ms && (flags & GPIO_INT_ENABLE)) {
-			BEE_GPIO_INTConfig(port_base, gpio_bit, DISABLE);
-			BEE_GPIO_Init(port_base, &gpio_init_struct);
-			BEE_GPIO_MaskINTConfig(port_base, gpio_bit, ENABLE);
-			BEE_GPIO_INTConfig(port_base, gpio_bit, ENABLE);
+			GPIO_INTConfig(port_base, gpio_bit, DISABLE);
+			GPIO_Init(port_base, &gpio_init_struct);
+			GPIO_MaskINTConfig(port_base, gpio_bit, ENABLE);
+			GPIO_INTConfig(port_base, gpio_bit, ENABLE);
 			k_busy_wait(data->pin_debounce_ms[pin] * 2 * USEC_PER_MSEC);
-			BEE_GPIO_ClearINTPendingBit(port_base, gpio_bit);
-			BEE_GPIO_MaskINTConfig(port_base, gpio_bit, DISABLE);
+			GPIO_ClearINTPendingBit(port_base, gpio_bit);
+			GPIO_MaskINTConfig(port_base, gpio_bit, DISABLE);
 		} else {
-			BEE_GPIO_Init(port_base, &gpio_init_struct);
+			GPIO_Init(port_base, &gpio_init_struct);
 		}
 	}
 
@@ -252,7 +237,7 @@ static int gpio_bee_port_get_raw(const struct device *port, gpio_port_value_t *v
 
 	port_base = config->port_base;
 
-	*value = BEE_GPIO_ReadInputData(port_base);
+	*value = GPIO_ReadInputData(port_base);
 
 	return 0;
 }
@@ -267,10 +252,10 @@ static int gpio_bee_port_set_masked_raw(const struct device *port, gpio_port_pin
 	data = port->data;
 	port_base = config->port_base;
 
-	gpio_port_pins_t pins_value = BEE_GPIO_ReadInputData(port_base);
+	gpio_port_pins_t pins_value = GPIO_ReadInputData(port_base);
 
 	pins_value = (pins_value & ~mask) | (mask & value);
-	BEE_GPIO_Write(port_base, pins_value);
+	GPIO_Write(port_base, pins_value);
 
 	return 0;
 }
@@ -284,7 +269,7 @@ static int gpio_bee_port_set_bits_raw(const struct device *port, gpio_port_pins_
 	data = port->data;
 	port_base = config->port_base;
 
-	BEE_GPIO_SetBits(port_base, pins);
+	GPIO_SetBits(port_base, pins);
 
 	return 0;
 }
@@ -298,7 +283,7 @@ static int gpio_bee_port_clear_bits_raw(const struct device *port, gpio_port_pin
 	data = port->data;
 	port_base = config->port_base;
 
-	BEE_GPIO_ResetBits(port_base, pins);
+	GPIO_ResetBits(port_base, pins);
 
 	return 0;
 }
@@ -312,10 +297,10 @@ static int gpio_bee_port_toggle_bits(const struct device *port, gpio_port_pins_t
 	data = port->data;
 	port_base = config->port_base;
 
-	uint32_t pins_value = BEE_GPIO_ReadInputData(port_base);
+	uint32_t pins_value = GPIO_ReadInputData(port_base);
 
 	pins_value = pins_value ^ pins;
-	BEE_GPIO_Write(port_base, pins_value);
+	GPIO_Write(port_base, pins_value);
 	LOG_DBG("port=%s, pin=0x%x, pins_value=0x%x, line%d", port->name, pins, pins_value,
 		__LINE__);
 
@@ -338,17 +323,17 @@ static int gpio_bee_pin_interrupt_configure(const struct device *port, gpio_pin_
 
 #ifdef CONFIG_GPIO_ENABLE_DISABLE_INTERRUPT
 	if (mode == GPIO_INT_MODE_DISABLE_ONLY) {
-		BEE_GPIO_MaskINTConfig(port_base, gpio_bit, ENABLE);
-		BEE_GPIO_INTConfig(port_base, gpio_bit, DISABLE);
+		GPIO_MaskINTConfig(port_base, gpio_bit, ENABLE);
+		GPIO_INTConfig(port_base, gpio_bit, DISABLE);
 		return 0;
 	} else if (mode == GPIO_INT_MODE_ENABLE_ONLY) {
-		BEE_GPIO_INTConfig(port_base, gpio_bit, ENABLE);
-		BEE_GPIO_MaskINTConfig(port_base, gpio_bit, DISABLE);
+		GPIO_INTConfig(port_base, gpio_bit, ENABLE);
+		GPIO_MaskINTConfig(port_base, gpio_bit, DISABLE);
 		return 0;
 	}
 #endif /* CONFIG_GPIO_ENABLE_DISABLE_INTERRUPT */
 
-	BEE_GPIO_INTConfig(port_base, gpio_bit, DISABLE);
+	GPIO_INTConfig(port_base, gpio_bit, DISABLE);
 
 	GPIO_StructInit(&gpio_init_struct);
 
@@ -385,17 +370,17 @@ static int gpio_bee_pin_interrupt_configure(const struct device *port, gpio_pin_
 		return -ENOTSUP;
 	}
 
-	BEE_GPIO_Init(port_base, &gpio_init_struct);
-	BEE_GPIO_MaskINTConfig(port_base, gpio_bit, ENABLE);
-	BEE_GPIO_INTConfig(port_base, gpio_bit, ENABLE);
+	GPIO_Init(port_base, &gpio_init_struct);
+	GPIO_MaskINTConfig(port_base, gpio_bit, ENABLE);
+	GPIO_INTConfig(port_base, gpio_bit, ENABLE);
 
 	/* to avoid trigger gpio interrupt */
 	if (data->pin_debounce_ms[pin]) {
 		k_busy_wait(data->pin_debounce_ms[pin] * 2 * USEC_PER_MSEC);
 	}
 
-	BEE_GPIO_ClearINTPendingBit(port_base, gpio_bit);
-	BEE_GPIO_MaskINTConfig(port_base, gpio_bit, DISABLE);
+	GPIO_ClearINTPendingBit(port_base, gpio_bit);
+	GPIO_MaskINTConfig(port_base, gpio_bit, DISABLE);
 
 	return 0;
 }
@@ -448,7 +433,7 @@ static void gpio_bee_isr(void *arg)
 
 	for (uint32_t i = 0; i < 32; i++) {
 		if (BIT(i) & pins) {
-			BEE_GPIO_ClearINTPendingBit(port_base, BIT(i) & pins);
+			GPIO_ClearINTPendingBit(port_base, BIT(i) & pins);
 		}
 	}
 }
