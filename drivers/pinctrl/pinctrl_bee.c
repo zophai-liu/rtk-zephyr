@@ -8,12 +8,6 @@
 
 #include <rtl_pinmux.h>
 
-#define bee_pad_set_pull(pin, stre)       Pad_SetPullStrength(pin, stre)
-#define BEE_DRIVING_LEVEL0 LEVEL0
-#define BEE_DRIVING_LEVEL1 LEVEL1
-#define BEE_DRIVING_LEVEL2 LEVEL2
-#define BEE_DRIVING_LEVEL3 LEVEL3
-
 static void pinctrl_configure_pin(const pinctrl_soc_pin_t *pin)
 {
 	uint32_t cfg_fun = pin[0].fun;
@@ -25,24 +19,24 @@ static void pinctrl_configure_pin(const pinctrl_soc_pin_t *pin)
 	uint32_t current_level = pin[0].current_level;
 
 	/* set pull strength */
-	bee_pad_set_pull(cfg_pin, cfg_pull_strength);
+	Pad_SetPullStrength(cfg_pin, cfg_pull_strength);
 
 	/* set current level */
 	switch (current_level) {
 	case 0:
-		Pad_SetDrivingCurrent(cfg_pin, BEE_DRIVING_LEVEL0);
+		Pad_SetDrivingCurrent(cfg_pin, LEVEL0);
 		break;
 
 	case 1:
-		Pad_SetDrivingCurrent(cfg_pin, BEE_DRIVING_LEVEL1);
+		Pad_SetDrivingCurrent(cfg_pin, LEVEL1);
 		break;
 
 	case 2:
-		Pad_SetDrivingCurrent(cfg_pin, BEE_DRIVING_LEVEL2);
+		Pad_SetDrivingCurrent(cfg_pin, LEVEL2);
 		break;
 
 	case 3:
-		Pad_SetDrivingCurrent(cfg_pin, BEE_DRIVING_LEVEL3);
+		Pad_SetDrivingCurrent(cfg_pin, LEVEL3);
 		break;
 
 	default:
