@@ -27,6 +27,7 @@ LOG_MODULE_REGISTER(uart_bee, CONFIG_UART_LOG_LEVEL);
 struct uart_bee_config {
 	UART_TypeDef *uart;
 	uint16_t clkid;
+	uint8_t rx_threshold;
 	bool hw_flow_ctrl;
 	const struct pinctrl_dev_config *pcfg;
 #ifdef CONFIG_UART_INTERRUPT_DRIVEN
@@ -177,7 +178,7 @@ static int uart_bee_configure(const struct device *dev, const struct uart_config
 	uart_init_struct.UART_StopBits = stopbits;
 	uart_init_struct.UART_Parity = parity;
 	uart_init_struct.UART_HardwareFlowControl = cfg->flow_ctrl;
-	uart_init_struct.UART_RxThdLevel = CONFIG_UART_BEE_RX_THRESHOLD;
+	uart_init_struct.UART_RxThdLevel = config->rx_threshold;
 	uart_init_struct.UART_TxThdLevel = UART_TX_FIFO_SIZE / 2;
 
 	UART_Init(uart, &uart_init_struct);
@@ -546,6 +547,7 @@ static DEVICE_API(uart, uart_bee_driver_api) = {
 		.uart = (UART_TypeDef *)DT_INST_REG_ADDR(index),                                   \
 		.clkid = DT_INST_CLOCKS_CELL(index, id),                                           \
 		.pcfg = PINCTRL_DT_INST_DEV_CONFIG_GET(index),                                     \
+		.rx_threshold = DT_INST_PROP_OR(index, rx_threshold, 10),                          \
 		.hw_flow_ctrl = DT_INST_PROP_OR(index, flow_ctrl, false),                          \
 		BEE_UART_IRQ_HANDLER_FUNC(index)};                                                 \
                                                                                                    \

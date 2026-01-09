@@ -26,6 +26,11 @@ properties:
   pinctrl-names:
     required: true
 
+  rx-threshold:
+    type: int
+    description: |
+      The Rx threshold level to trigger rx interrupt, range from 1 to 29.
+
   flow-ctrl:
     type: boolean
     description: |
