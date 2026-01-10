@@ -3,8 +3,9 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  */
-#include <patch_header_check.h>
+
 #include <stdlib.h>
+#include <image_header.h>
 #include <rom_uuid.h>
 #include <version.h>
 
