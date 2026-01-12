@@ -7,12 +7,10 @@
 #include <string.h>
 
 #include <zephyr/kernel.h>
-#include <zephyr/linker/linker-defs.h>
-#include <kernel_internal.h>
 #include <zephyr/arch/common/init.h>
+#include <zephyr/sys/reboot.h>
 #include <soc.h>
 
-#include "mem_config.h"
 #include "system_init_ns.h"
 #include "rom_ns_cb.h"
 #include "utils.h"
@@ -34,22 +32,6 @@ static void rtl87x2g_extra_ram_init(void)
 static int rtl87x2g_platform_init(void)
 {
 	rtl87x2g_extra_ram_init();
-	/*
-	 * RTL87X2G reserves a RAM region for the vector table, referred to as the RamVectorTable.
-	 * Steps to initialize the vector table in RAM:
-	 * 1. Set the SCB->VTOR register to point to the start address of the RamVectorTable.
-	 * 2. Copy Zephyr's vector table to the RamVectorTable.
-	 */
-	size_t vector_size = (size_t)_vector_end - (size_t)_vector_start;
-#ifdef CONFIG_TRUSTED_EXECUTION_NONSECURE
-	/* tz enabled */
-	SCB->VTOR = (uint32_t)NS_RAM_VECTOR_ADDR;
-	(void)memcpy((void *)NS_RAM_VECTOR_ADDR, _vector_start, vector_size);
-#else
-	/* tz disabled */
-	SCB->VTOR = (uint32_t)S_RAM_VECTOR_ADDR;
-	(void)memcpy((void *)S_RAM_VECTOR_ADDR, _vector_start, vector_size);
-#endif
 
 	/* TZ enabled: for "Non-secure function call".
 	 * Init non-secure function pointer that will be called by secure side using
@@ -64,25 +46,17 @@ static int rtl87x2g_platform_init(void)
 	 */
 	secure_os_func_ptr_init();
 
-	/* Function same as secure_os_func_ptr_init. But the non-secure function pointer
-	 * is write_info_to_flash_before_reset that is used in WDG_SystemReset_Dump
-	 * (secure function).
-	 */
-	secure_platform_func_ptr_init();
-
-	/* Configure Memory Attritube through MPU.
-	 * Refer to boot_cfg.common.mpu_region[8].
-	 */
+	/* Configure Memory Attritube through MPU. */
 	mpu_setup();
 
-	/* RXI300 init*/
+	/* RXI300 init */
 	hal_setup_hardware();
 
-	/* dwt init, mpu setup(again), init FPU */
+	/* DWT init & FPU init */
 	hal_setup_cpu();
 
 #ifdef CONFIG_TRUSTED_EXECUTION_NONSECURE
-	/* Set certain interrupts to be generated in NS mode.*/
+	/* Set certain interrupts to be generated in NS mode. */
 	setup_non_secure_nvic();
 #endif
 
@@ -93,9 +67,7 @@ static int rtl87x2g_update_systick_config(void)
 {
 	/* rtl87x2g's cortex-m systick timer is using external clock source
 	 * instead of cpu clock as referance.
-	 * The priority of systick interrupt is lowest for rtl87x2g SoCs.
 	 */
-	NVIC_SetPriority(SysTick_IRQn, 0xff);
 	SysTick->CTRL &= ~SysTick_CTRL_CLKSOURCE_Msk;
 
 	return 0;
@@ -111,7 +83,13 @@ void arch_busy_wait(uint32_t usec_to_wait)
 /* Overrides the weak ARM implementation */
 void sys_arch_reboot(int type)
 {
-	WDG_SystemReset(0, type);
+    /* Convert SYS_REBOOT_WARM (0) to RESET_ALL_EXCEPT_AON (1).
+     * Convert SYS_REBOOT_COLD (1) to RESET_ALL (0).
+	 */
+    int wdt_mode = (type == SYS_REBOOT_WARM) ? RESET_ALL_EXCEPT_AON : RESET_ALL;
+    
+    /* Call the watchdog system reset with the converted mode and reset reason. */
+    WDG_SystemReset(wdt_mode, RESET_REASON_ZEPHYR);
 }
 
 SYS_INIT(rtl87x2g_platform_init, EARLY, 0);
