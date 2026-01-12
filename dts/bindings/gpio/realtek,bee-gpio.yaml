@@ -20,13 +20,19 @@ description: |
 
 compatible: "realtek,bee-gpio"
 
-include: [gpio-controller.yaml, base.yaml]
+include: [gpio-controller.yaml, base.yaml, pinctrl-device.yaml]
 
 properties:
   reg:
     required: true
 
   clocks:
+    required: true
+
+  pinctrl-0:
+    required: true
+
+  pinctrl-names:
     required: true
 
   "#gpio-cells":
