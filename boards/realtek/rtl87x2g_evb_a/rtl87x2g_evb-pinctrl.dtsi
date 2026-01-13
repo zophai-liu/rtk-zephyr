@@ -8,8 +8,16 @@
 &pinctrl {
 	uart2_default: uart2_default {
 		group1 {
-			psels = <BEE_PSEL(UART2_TX, P3_2, DIR_OUT, DRV_HIGH, PULL_UP)>,
-				<BEE_PSEL(UART2_RX, P3_3, DIR_IN, DRV_HIGH, PULL_UP)>;
+			psels = <BEE_PSEL(UART2_TX, P3_2)>;
+			output-enable;
+			output-high;
+			bias-pull-up;
+		};
+
+		group2 {
+			psels = <BEE_PSEL(UART2_RX, P3_3)>;
+			output-disable;
+			bias-pull-up;
 		};
 	};
 };
