@@ -66,6 +66,17 @@ child-binding:
   description: |
     Bee pin controller pin configuration state nodes.
   child-binding:
+    include:
+      - name: pincfg-node.yaml
+        property-allowlist:
+          - bias-disable
+          - bias-pull-up
+          - bias-pull-down
+          - output-disable
+          - output-enable
+          - output-low
+          - output-high
+
     description: |
       Realtek Bee pin controller pin configuration group.
 

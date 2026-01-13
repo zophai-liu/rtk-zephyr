@@ -170,12 +170,4 @@
 #define P5_1 37 /**<GPIO11   */
 #define P5_2 38 /**<GPIO12   */
 
-#define BEE_DIR_IN    0
-#define BEE_DIR_OUT   1
-#define BEE_DRV_LOW   0
-#define BEE_DRV_HIGH  1
-#define BEE_PULL_UP   0
-#define BEE_PULL_DOWN 1
-#define BEE_PULL_NONE 2
-
 #endif /* ZEPHYR_INCLUDE_DT_BINDINGS_PINCTRL_RTL8752H_PINCTRL_H_ */

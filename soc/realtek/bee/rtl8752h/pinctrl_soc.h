@@ -17,7 +17,8 @@ extern "C" {
 
 typedef struct {
 	/* bit[0:10]   pad number
-	 * bit[11:12]  pad pull level
+	 * bit[11]     pad pull disable
+	 * bit[12]     pad pull dir
 	 * bit[13]     pad output level
 	 * bit[14]     pad direction
 	 * bit[15]     pad pull strength
@@ -26,7 +27,8 @@ typedef struct {
 	 * bit[34:36]  pad current level
 	 */
 	uint32_t pin: 11;
-	uint32_t pull: 2;
+	uint32_t pull_dis: 1;
+	uint32_t pull_dir: 1;
 	uint32_t drive: 1;
 	uint32_t dir: 1;
 	uint32_t pull_strength: 1;
@@ -41,11 +43,12 @@ typedef pinctrl_soc_pin pinctrl_soc_pin_t;
 #define Z_PINCTRL_STATE_PIN_INIT(node_id, prop, idx)                         \
 	{                                                                    \
 		.pin = BEE_GET_PIN(DT_PROP_BY_IDX(node_id, prop, idx)),      \
-		.pull = BEE_GET_PULL(DT_PROP_BY_IDX(node_id, prop, idx)),    \
-		.drive = BEE_GET_DRIVE(DT_PROP_BY_IDX(node_id, prop, idx)),  \
-		.dir = BEE_GET_DIR(DT_PROP_BY_IDX(node_id, prop, idx)),      \
-		.pull_strength = DT_PROP_OR(node_id, bias_pull_strong, 0),         \
 		.fun = BEE_GET_FUN(DT_PROP_BY_IDX(node_id, prop, idx)),      \
+		.pull_dis = DT_PROP_OR(node_id, bias-disable, 0),    \
+		.pull_dir = DT_PROP_OR(node_id, bias_pull_up, 0),    \
+		.drive = DT_PROP_OR(node_id, output_high, 0),  \
+		.dir = DT_PROP_OR(node_id, output_enable, 0),      \
+		.pull_strength = DT_PROP_OR(node_id, bias_pull_strong, 0),         \
 		.current_level = DT_PROP_OR(node_id, current_level, 0),                  \
 	},
 
@@ -54,9 +57,6 @@ typedef pinctrl_soc_pin pinctrl_soc_pin_t;
 				Z_PINCTRL_STATE_PIN_INIT)}
 
 #define BEE_GET_FUN(pincfg) (((pincfg) >> BEE_FUN_POS) & BEE_FUN_MSK)
-#define BEE_GET_DIR(pincfg) (((pincfg) >> BEE_DIR_POS) & BEE_DIR_MSK)
-#define BEE_GET_DRIVE(pincfg) (((pincfg) >> BEE_DRIVE_POS) & BEE_DRIVE_MSK)
-#define BEE_GET_PULL(pincfg) (((pincfg) >> BEE_PULL_POS) & BEE_PULL_MSK)
 #define BEE_GET_PIN(pincfg) (((pincfg) >> BEE_PIN_POS) & BEE_PIN_MSK)
 
 #ifdef __cplusplus
