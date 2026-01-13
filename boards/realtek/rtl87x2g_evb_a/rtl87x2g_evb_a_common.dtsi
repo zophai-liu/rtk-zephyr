@@ -14,12 +14,67 @@
 		zephyr,itcm = &tcm1;
 		zephyr,console = &uart2;
 		zephyr,shell-uart = &uart2;
-		zephyr,flash-controller = &fmc;
+	};
+
+	aliases {
+		led0 = &green_led;
+	};
+
+	leds {
+		compatible = "gpio-leds";
+	
+		led3: led_3 {
+			gpios = <&gpioa 29 GPIO_ACTIVE_LOW>;
+			label = "LED 3";
+		};
+	
+		led4: led_4 {
+			gpios = <&gpioa 30 GPIO_ACTIVE_LOW>;
+			label = "LED 4";
+		};
+	
+		led5: led_5 {
+			gpios = <&gpioa 8 GPIO_ACTIVE_LOW>;
+			label = "LED 5";
+		};
+	
+		led7: led_7 {
+			gpios = <&gpioa 9 GPIO_ACTIVE_LOW>;
+			label = "LED 7";
+		};
+
+		blue_led: blue_led {
+			gpios = <&gpioa 30 GPIO_ACTIVE_LOW>;
+			label = "Blue LED";
+		};
+
+		green_led: green_led {
+			gpios = <&gpioa 8 GPIO_ACTIVE_LOW>;
+			label = "Green LED";
+		};
+
+		red_led: red_led {
+			gpios = <&gpioa 9 GPIO_ACTIVE_LOW>;
+			label = "Red LED";
+		};
 	};
 };
 
-&cpu {
-	clock-frequency = <40000000>;
+&gpioa {
+	pinctrl-0 = <&gpioa_default>;
+	pinctrl-names = "default";
+	status = "okay";
+};
+   
+&pinctrl {
+	gpioa_default: gpioa_default {
+		group1 {
+			psels = <BEE_PSEL(DWGPIO, P1_0)>,
+					<BEE_PSEL(DWGPIO, P1_1)>,
+					<BEE_PSEL(DWGPIO, P3_0)>,
+					<BEE_PSEL(DWGPIO, P3_1)>;
+		};
+	};
 };
 
 &uart2 {
@@ -30,4 +85,8 @@
 	parity = "none";
 	stop-bits = "1";
 	data-bits = <8>;
+};
+
+&cpu {
+	clock-frequency = <40000000>;
 };

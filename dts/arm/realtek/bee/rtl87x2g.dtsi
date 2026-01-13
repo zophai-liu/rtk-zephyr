@@ -129,8 +129,6 @@
 
 		pinctrl: pin-controller@40002500 {
 			compatible = "realtek,bee-pinctrl";
-			#address-cells = <1>;
-			#size-cells = <1>;
 			reg = <0x40002500 0x864>;
 		};
 
