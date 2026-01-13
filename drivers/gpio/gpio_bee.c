@@ -11,7 +11,7 @@
 #include <zephyr/device.h>
 #include <soc.h>
 #include <zephyr/drivers/clock_control.h>
-#include <zephyr/drivers/reset.h>
+#include <zephyr/drivers/pinctrl.h>
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/drivers/clock_control/bee_clock_control.h>
 #include <zephyr/sys/util.h>
@@ -32,6 +32,12 @@
 
 LOG_MODULE_REGISTER(gpio_bee, CONFIG_GPIO_LOG_LEVEL);
 
+struct gpio_pad_node {
+	sys_snode_t node;
+	uint8_t pad_num;
+	uint8_t pin_debounce_ms;
+};
+
 struct gpio_bee_irq_info {
 	const struct device *irq_dev;
 	uint8_t num_irq;
@@ -46,6 +52,7 @@ struct gpio_bee_config {
 	uint16_t clkid;
 	uint8_t port_num;
 	GPIO_TypeDef *port_base;
+	const struct pinctrl_dev_config *pcfg;
 	struct gpio_bee_irq_info *irq_info;
 };
 
@@ -53,46 +60,16 @@ struct gpio_bee_data {
 	struct gpio_driver_data common;
 	const struct device *dev;
 	sys_slist_t cb;
-	uint8_t pin_debounce_ms[32];
+	struct gpio_pad_node *array;
 };
-
-static int gpio_bee_gpio2pad(uint8_t port_num, uint32_t pin)
-{
-	if (pin <= 9) {
-		return pin;
-	} else if (pin <= 12) {
-		return pin + 26;
-	} else if (pin == 13) {
-		return 32;
-	} else if (pin <= 28) {
-		return pin;
-	} else if (pin == 29) {
-#if BEE_USE_P4_1_AS_GPIO29
-		return 33;
-#else
-		return 29;
-#endif
-	} else if (pin == 30) {
-#if BEE_USE_P4_2_AS_GPIO30
-		return 34;
-#else
-		return 30;
-#endif
-	} else if (pin == 31) {
-		return 35;
-	}
-
-	return -EIO;
-}
 
 static int gpio_bee_pin_configure(const struct device *port, gpio_pin_t pin, gpio_flags_t flags)
 {
 	const struct gpio_bee_config *config = port->config;
 	struct gpio_bee_data *data = port->data;
 	GPIO_TypeDef *port_base;
-	uint8_t port_num = config->port_num;
 	uint32_t gpio_bit = BIT(pin);
-	int pad_pin = gpio_bee_gpio2pad(port_num, pin);
+	int pad_pin;
 	uint32_t pull_config;
 	GPIO_InitTypeDef gpio_init_struct;
 	uint8_t debounce_ms =
@@ -103,7 +80,9 @@ static int gpio_bee_pin_configure(const struct device *port, gpio_pin_t pin, gpi
 
 	port_base = config->port_base;
 
-	__ASSERT(pad_pin >= 0, "gpio port or pin error");
+	pad_pin = data->array[pin].pad_num;
+
+	__ASSERT(pad_pin < TOTAL_PIN_NUM, "gpio port or pin error");
 
 	if (flags & GPIO_OPEN_SOURCE) {
 		ret = -ENOTSUP;
@@ -130,10 +109,10 @@ static int gpio_bee_pin_configure(const struct device *port, gpio_pin_t pin, gpi
 		if (debounce_ms) {
 			gpio_init_struct.GPIO_DebounceTime = debounce_ms;
 			gpio_init_struct.GPIO_ITDebounce = GPIO_INT_DEBOUNCE_ENABLE;
-			data->pin_debounce_ms[pin] = debounce_ms;
+			data->array[pin].pin_debounce_ms = debounce_ms;
 		} else {
 			gpio_init_struct.GPIO_ITDebounce = GPIO_INT_DEBOUNCE_DISABLE;
-			data->pin_debounce_ms[pin] = 0;
+			data->array[pin].pin_debounce_ms = 0;
 		}
 
 		gpio_init_struct.GPIO_Pin = gpio_bit;
@@ -167,7 +146,7 @@ static int gpio_bee_pin_configure(const struct device *port, gpio_pin_t pin, gpi
 			GPIO_Init(&gpio_init_struct);
 			GPIO_MaskINTConfig(gpio_bit, ENABLE);
 			GPIO_INTConfig(gpio_bit, ENABLE);
-			k_busy_wait(data->pin_debounce_ms[pin] * 2 * USEC_PER_MSEC);
+			k_busy_wait(data->array[pin].pin_debounce_ms * 2 * USEC_PER_MSEC);
 			GPIO_ClearINTPendingBit(gpio_bit);
 			GPIO_MaskINTConfig(gpio_bit, DISABLE);
 		} else {
@@ -287,8 +266,8 @@ static int gpio_bee_pin_interrupt_configure(const struct device *port, gpio_pin_
 
 	gpio_init_struct.GPIO_Pin = gpio_bit;
 	gpio_init_struct.GPIO_Mode = GPIO_Mode_IN;
-	if (data->pin_debounce_ms[pin]) {
-		gpio_init_struct.GPIO_DebounceTime = data->pin_debounce_ms[pin];
+	if (data->array[pin].pin_debounce_ms) {
+		gpio_init_struct.GPIO_DebounceTime = data->array[pin].pin_debounce_ms;
 		gpio_init_struct.GPIO_ITDebounce = GPIO_INT_DEBOUNCE_ENABLE;
 	} else {
 		gpio_init_struct.GPIO_ITDebounce = GPIO_INT_DEBOUNCE_DISABLE;
@@ -325,8 +304,8 @@ static int gpio_bee_pin_interrupt_configure(const struct device *port, gpio_pin_
 	GPIO_INTConfig(gpio_bit, ENABLE);
 
 	/* to avoid trigger gpio interrupt */
-	if (data->pin_debounce_ms[pin]) {
-		k_busy_wait(data->pin_debounce_ms[pin] * 2 * USEC_PER_MSEC);
+	if (data->array[pin].pin_debounce_ms) {
+		k_busy_wait(data->array[pin].pin_debounce_ms * 2 * USEC_PER_MSEC);
 	}
 
 	GPIO_ClearINTPendingBit(gpio_bit);
@@ -392,6 +371,8 @@ static int gpio_bee_init(const struct device *dev)
 {
 	struct gpio_bee_data *data = dev->data;
 	const struct gpio_bee_config *config = dev->config;
+	const struct pinctrl_state *state;
+	uint8_t pin_num, pad_num;
 	int ret = 0;
 
 	(void)clock_control_on(BEE_CLOCK_CONTROLLER, (clock_control_subsys_t)&config->clkid);
@@ -404,7 +385,33 @@ static int gpio_bee_init(const struct device *dev)
 	}
 
 	data->dev = dev;
-	memset(data->pin_debounce_ms, 0, sizeof(data->pin_debounce_ms));
+
+	for (uint8_t i = 0; i < 32; i++) {
+		data->array[i].pad_num = TOTAL_PIN_NUM;
+	}
+
+	ret = pinctrl_lookup_state(config->pcfg, PINCTRL_STATE_DEFAULT, &state);
+	if ((ret < 0) && (ret != -ENOENT)) {
+		LOG_ERR("GPIO relate pins should be configured on dts pinctrl node");
+		return -EIO;
+	}
+
+	for (uint8_t state_cnt = 0; state_cnt < state->pin_cnt; state_cnt++) {
+		pad_num = state->pins[state_cnt].pin;
+		pin_num = GPIO_GetNum(pad_num);
+		if (pin_num == 0xff) {
+			LOG_ERR("Wrong pad is configured as GPIO.");
+			continue;
+		}
+
+		if (data->array[pin_num].pad_num != TOTAL_PIN_NUM) {
+			LOG_ERR("Redundant configuration for different pads "
+					"using the same GPIO pin.");
+			continue;
+		}
+
+		data->array[pin_num].pad_num = pad_num;
+	}
 
 	return ret;
 }
@@ -438,7 +445,13 @@ static DEVICE_API(gpio, gpio_bee_driver_api) = {
 
 #define GPIO_BEE_GET_IRQ_INFO(index) .irq_info = &gpio_bee_irq_info##index,
 
+#define GPIO_BEE_ARRAY_DEFINE(index) struct gpio_pad_node gpio_pad_node_array##index[32];
+
+#define GPIO_BEE_DATA_INIT(index) .array = gpio_pad_node_array##index,
+
 #define GPIO_BEE_DEVICE_INIT(index)                                                                \
+	PINCTRL_DT_INST_DEFINE(index);                                                             \
+	GPIO_BEE_ARRAY_DEFINE(index)                                                               \
 	GPIO_BEE_SET_IRQ_INFO(index)                                                               \
 	static const struct gpio_bee_config gpio_bee_port##index##_cfg = {                         \
 		.common =                                                                          \
@@ -448,9 +461,10 @@ static DEVICE_API(gpio, gpio_bee_driver_api) = {
 		.port_num = DT_INST_PROP(index, port),                                             \
 		.port_base = (GPIO_TypeDef *)DT_INST_REG_ADDR(index),                              \
 		.clkid = DT_INST_CLOCKS_CELL(index, id),                                           \
+		.pcfg = PINCTRL_DT_INST_DEV_CONFIG_GET(index),                                     \
 		GPIO_BEE_GET_IRQ_INFO(index)};                                                     \
                                                                                                    \
-	static struct gpio_bee_data gpio_bee_port##index##_data;     \
+	static struct gpio_bee_data gpio_bee_port##index##_data = {GPIO_BEE_DATA_INIT(index)};     \
 	DEVICE_DT_INST_DEFINE(index, gpio_bee_init, NULL,                  \
 			      &gpio_bee_port##index##_data, &gpio_bee_port##index##_cfg,           \
 			      POST_KERNEL, CONFIG_GPIO_INIT_PRIORITY, &gpio_bee_driver_api);
