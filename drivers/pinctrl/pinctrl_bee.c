@@ -12,9 +12,10 @@ static void pinctrl_configure_pin(const pinctrl_soc_pin_t *pin)
 {
 	uint32_t cfg_fun = pin[0].fun;
 	uint32_t cfg_pin = pin[0].pin;
-	uint32_t cfg_dir = pin[0].dir;
-	uint32_t cfg_drv = pin[0].drive;
-	uint32_t cfg_pull = pin[0].pull;
+	uint32_t cfg_dir = pin[0].dir ? PAD_OUT_ENABLE : PAD_OUT_DISABLE;
+	uint32_t cfg_drv = pin[0].drive ? PAD_OUT_HIGH : PAD_OUT_LOW;
+	uint32_t cfg_pull = pin[0].pull_dis ? PAD_PULL_NONE :
+						pin[0].pull_dir ? PAD_PULL_UP : PAD_PULL_NONE;
 	uint32_t cfg_pull_strength = pin[0].pull_strength;
 	uint32_t current_level = pin[0].current_level;
 

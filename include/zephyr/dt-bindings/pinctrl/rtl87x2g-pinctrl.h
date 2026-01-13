@@ -313,12 +313,4 @@
 #define ADC_6 P2_6 /*!< GPIO22   */
 #define ADC_7 P2_7 /*!< GPIO23   */
 
-#define BEE_DIR_IN    0
-#define BEE_DIR_OUT   1
-#define BEE_DRV_LOW   0
-#define BEE_DRV_HIGH  1
-#define BEE_PULL_DOWN 0
-#define BEE_PULL_UP   1
-#define BEE_PULL_NONE 2
-
 #endif /* ZEPHYR_INCLUDE_DT_BINDINGS_PINCTRL_RTL87X2G_PINCTRL_H_ */
