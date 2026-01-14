@@ -50,7 +50,7 @@ static const struct apb_cfg bee_apb_table[] = {
 	{APBPeriph_IF8080, APBPeriph_IF8080_CLOCK},
 	{APBPeriph_ADC, APBPeriph_ADC_CLOCK},
 	{APBPeriph_SPI2W, APBPeriph_SPI2W_CLOCK},
-	{APBPeriph_MODEMRFCPI_CLOCK, APBPeriph_MODEMRFCPI_CLOCK},
+	{APBPeriph_MODEMRFCPI, APBPeriph_MODEM_CLOCK},
 	{APBPeriph_BLUEWIZ, APBPeriph_BLUEWIZ_CLOCK},
 	{APBPeriph_ZIGBEE, APBPeriph_ZIGBEE_CLOCK},
 	{APBPeriph_KEYSCAN, APBPeriph_KEYSCAN_CLOCK},
