@@ -9,7 +9,7 @@
 #include "rtl87x2g_evb_a_common.dtsi"
 
 / {
-	model = "Realtek RTL87x2G Model A Evaluation Board with RTL8762GRU Daughter Board";
+	model = "Realtek RTL87x2G Model A Evaluation Board with RTL8762GRH Daughter Board";
 };
 
 &flash {

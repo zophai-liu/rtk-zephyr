@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+#include "rtl87x2g_evb_a-pinctrl.dtsi"
+
 / {
 	compatible = "realtek,rtl87x2g_evb_a";
 

@@ -15,6 +15,8 @@ The RTL87x2G Model A evaluation board is compatible with the following daughter 
 - RTL8762GKU/GKH Daughter Board
 - RTL8762GC Daughter Board
 
+Note: RTL8762GC is currently not supported on Zephyr, because it uses external flash memory, so the size is not fixed.
+
 .. image:: img/rtl87x2g_evb_a.webp
      :align: center
      :alt: rtl87x2g_evb_a
@@ -31,7 +33,7 @@ Below are the common hardware features of the RTL87x2G series:
 - Realtek KM4 core compatible with Arm Cortex-M55, running at 125MHz
 - M-profile Vector Extension (MVE) for vector computation
 - 32KB Icache, 16KB Dcache, and 384KB SRAM
-- Some part numbers  include MCM 4MB PSRAM
+- Some part numbers include MCM 4MB PSRAM
 - Hardware keyscan / Quad Decode
 - Flash On-The-Fly
 - Embedded IR TX/RX
@@ -58,7 +60,6 @@ RTL87x2G Model A Evaluation Board supports these features:
 - Support audio module (AMIC, DMIC) interface
 - Red LED and RGB LED module
 - USB to UART chip, FT232RL
-
 
 Supported Features
 ==================

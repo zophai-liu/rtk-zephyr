@@ -6,7 +6,6 @@
 
 /dts-v1/;
 #include <realtek/bee/rtl8762gkh_gku.dtsi>
-#include "rtl87x2g_evb-pinctrl.dtsi"
 #include "rtl87x2g_evb_a_common.dtsi"
 
 / {
