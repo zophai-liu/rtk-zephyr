@@ -6,20 +6,11 @@
 
 /dts-v1/;
 #include <realtek/bee/rtl8752hkf.dtsi>
-#include "rtl8752h_evb-pinctrl.dtsi"
+#include "rtl8752h_evb.dtsi"
 
 / {
 	model = "Realtek RTL8752H Evaluation Board";
 	compatible = "realtek,rtl8752h_evb";
-
-	chosen {
-		zephyr,code-partition = &app_partition;
-		zephyr,console = &uart2;
-		zephyr,shell-uart = &uart2;
-	};
-
-	/* These aliases are provided for compatibility with samples */
-	aliases {};
 };
 
 &flash {
@@ -38,19 +29,4 @@
 			reg = <0xFC000 DT_SIZE_K(16)>;
 		};
 	};
-};
-
-&cpu {
-	clock-frequency = <40000000>;
-};
-
-&uart2 {
-	pinctrl-0 = <&uart2_default>;
-	pinctrl-1 = <&uart2_sleep>;
-	pinctrl-names = "default", "sleep";
-	status = "okay";
-	current-speed = <2000000>;
-	parity = "none";
-	stop-bits = "1";
-	data-bits = <8>;
 };

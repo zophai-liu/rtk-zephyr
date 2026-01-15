@@ -28,6 +28,7 @@
 			reg = <0>;
 			#address-cells = <1>;
 			#size-cells = <1>;
+			clock-frequency = <40000000>;
 		};
 	};
 
