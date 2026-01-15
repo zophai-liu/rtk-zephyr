@@ -32,6 +32,9 @@
 
 LOG_MODULE_REGISTER(gpio_bee, CONFIG_GPIO_LOG_LEVEL);
 
+#define GPIO_GetPortIntStatus(port) (((GPIO_TypeDef *)(port))->INTSTATUS)
+#define GPIO_GetPortDirection(port) (((GPIO_TypeDef *)(port))->DATADIR)
+
 struct gpio_pad_node {
 	sys_snode_t node;
 	uint8_t pad_num;
