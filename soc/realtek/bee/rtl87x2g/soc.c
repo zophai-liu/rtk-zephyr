@@ -12,7 +12,6 @@
 #include <soc.h>
 
 #include "system_init_ns.h"
-#include "rom_ns_cb.h"
 #include "utils.h"
 #include "sys_reset.h"
 
