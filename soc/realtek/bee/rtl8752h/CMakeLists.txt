@@ -1,4 +1,4 @@
-# Copyright (c) 2026 Realtek Semiconductor Corp.
+# Copyright (c) 2026, Realtek Semiconductor Corporation.
 # SPDX-License-Identifier: Apache-2.0
 
 zephyr_library_sources_ifdef(CONFIG_REALTEK_BEE_IMAGE_HEADER bee_image_header.c)
