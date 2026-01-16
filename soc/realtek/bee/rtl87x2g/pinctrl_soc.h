@@ -15,7 +15,7 @@
 extern "C" {
 #endif
 
-typedef struct {
+struct pinctrl_soc_pin {
 	/* bit[0:10]   pad number
 	 * bit[11]     pad pull disable
 	 * bit[12]     pad pull dir
@@ -36,9 +36,9 @@ typedef struct {
 	uint32_t reserved_32: 1;
 	uint32_t reserved_33: 1;
 	uint32_t current_level: 2;
-} pinctrl_soc_pin;
+};
 
-typedef pinctrl_soc_pin pinctrl_soc_pin_t;
+typedef struct pinctrl_soc_pin pinctrl_soc_pin_t;
 
 #define Z_PINCTRL_STATE_PIN_INIT(node_id, prop, idx)                         \
 	{                                                                    \

@@ -26,9 +26,16 @@ description: |
       uart2_default: uart2_default {
         /* group 1 ('group1' name is arbitrary) */
         group1 {
-          /* configure P3_2 as UART_TX and P3_3 as UART_RX */
-          psels = <BEE_PSEL(UART2_TX, P3_2, DIR_OUT, DRV_HIGH, PULL_UP)>,
-                  <BEE_PSEL(UART2_RX, P3_3, DIR_IN, DRV_HIGH, PULL_UP)>;
+          psels = <BEE_PSEL(UART2_TX, P3_2)>;
+          output-enable;
+          output-high;
+          bias-pull-up;
+        };
+
+        group2 {
+          psels = <BEE_PSEL(UART2_RX, P3_3)>;
+          output-disable;
+          bias-pull-up;
         };
       };
     };
@@ -38,14 +45,14 @@ description: |
   state. You would specify the low-power configuration for the same device
   in a separate child node.
 
-  As shown, pin configurations are organized in groups within each child node.
-  Each group can specify a list of pin function selections in the 'psels'
-  property. The BEE_PSEL macro is used to specify a pin function selection
-  and pin configuration. You could choose pinmux specified function to
-  specified pin. And you could configure driver direction, driver state and
-  pull state for the specified pad. Available pin functions and configurations
-  can be found in the include\zephyr\dt-bindings\pinctrl\bee-pinctrl.h
-  header file.
+  As shown, pin configurations are organized into groups within each child node.
+  Each group can specify a list of pin function selections in the psels property.
+  The BEE_PSEL macro is used to specify pin function selection and pin properties,
+  allowing you to map a specific function to a specific pin. Additionally, within
+  a group, you can configure shared pin states for that group, such as
+  the direction, drive strength, and pull state of the corresponding pads.
+  Available pin functions can be found in the
+  zephyr\include\zephyr\dt-bindings\pinctrl\rtl87xxx-pinctrl.h header file.
 
   To link this pin configuration with a device, use a pinctrl-N property
   for some number N, like this example you could place in your board's DTS
