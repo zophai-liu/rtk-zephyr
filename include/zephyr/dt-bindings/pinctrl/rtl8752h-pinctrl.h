@@ -9,11 +9,7 @@
 
 #include "bee-pinctrl.h"
 
-/**
- * @name RTL8752H pinctrl pin functions.
- * @{
- */
-
+/* Pinctrl pinmux functions */
 #define BEE_IDLE_MODE          0
 #define BEE_UART2_TX           1
 #define BEE_UART2_RX           2
@@ -35,12 +31,12 @@
 #define BEE_TIM_PWM5           18
 #define BEE_ENPWM0             19
 #define BEE_ENPWM1             20
-#define BEE_qdec_phase_a_x     21
-#define BEE_qdec_phase_b_x     22
-#define BEE_qdec_phase_a_y     23
-#define BEE_qdec_phase_b_y     24
-#define BEE_qdec_phase_a_z     25
-#define BEE_qdec_phase_b_z     26
+#define BEE_QDEC_PHASE_A_X     21
+#define BEE_QDEC_PHASE_B_X     22
+#define BEE_QDEC_PHASE_A_Y     23
+#define BEE_QDEC_PHASE_B_Y     24
+#define BEE_QDEC_PHASE_A_Z     25
+#define BEE_QDEC_PHASE_B_Z     26
 #define BEE_UART0_TX           29
 #define BEE_UART0_RX           30
 #define BEE_UART0_CTS          31
@@ -133,6 +129,7 @@
 
 #define BEE_PIN_DISCONNECTED BEE_PIN_MSK
 
+/* Pinctrl available pins */
 #define P0_0 0 /**<GPIO0   */
 #define P0_1 1 /**<GPIO1   */
 #define P0_2 2 /**<GPIO2   */
@@ -169,5 +166,56 @@
 #define H_0  36 /**<GPIO10   MICBIAS   */
 #define P5_1 37 /**<GPIO11   */
 #define P5_2 38 /**<GPIO12   */
+
+/* GPIO pinctrl configuration */
+/* Port 0 */
+#define BEE_PSEL_GPIO_0_P0_0     BEE_PSEL(DWGPIO, P0_0)
+#define BEE_PSEL_GPIO_1_P0_1     BEE_PSEL(DWGPIO, P0_1)
+#define BEE_PSEL_GPIO_2_P0_2     BEE_PSEL(DWGPIO, P0_2)
+#define BEE_PSEL_GPIO_3_P0_3     BEE_PSEL(DWGPIO, P0_3)
+#define BEE_PSEL_GPIO_4_P0_4     BEE_PSEL(DWGPIO, P0_4)
+#define BEE_PSEL_GPIO_5_P0_5     BEE_PSEL(DWGPIO, P0_5)
+#define BEE_PSEL_GPIO_6_P0_6     BEE_PSEL(DWGPIO, P0_6)
+#define BEE_PSEL_GPIO_7_P0_7     BEE_PSEL(DWGPIO, P0_7)
+
+/* Port 1 */
+#define BEE_PSEL_GPIO_8_P1_0     BEE_PSEL(DWGPIO, P1_0)
+#define BEE_PSEL_GPIO_9_P1_1     BEE_PSEL(DWGPIO, P1_1)
+#define BEE_PSEL_GPIO_11_P1_3    BEE_PSEL(DWGPIO, P1_3)
+#define BEE_PSEL_GPIO_12_P1_4    BEE_PSEL(DWGPIO, P1_4)
+#define BEE_PSEL_GPIO_14_P1_6    BEE_PSEL(DWGPIO, P1_6)
+#define BEE_PSEL_GPIO_15_P1_7    BEE_PSEL(DWGPIO, P1_7)
+
+/* Port 2 */
+#define BEE_PSEL_GPIO_16_P2_0    BEE_PSEL(DWGPIO, P2_0)
+#define BEE_PSEL_GPIO_17_P2_1    BEE_PSEL(DWGPIO, P2_1)
+#define BEE_PSEL_GPIO_18_P2_2    BEE_PSEL(DWGPIO, P2_2)
+#define BEE_PSEL_GPIO_19_P2_3    BEE_PSEL(DWGPIO, P2_3)
+#define BEE_PSEL_GPIO_20_P2_4    BEE_PSEL(DWGPIO, P2_4)
+#define BEE_PSEL_GPIO_21_P2_5    BEE_PSEL(DWGPIO, P2_5)
+#define BEE_PSEL_GPIO_22_P2_6    BEE_PSEL(DWGPIO, P2_6)
+#define BEE_PSEL_GPIO_23_P2_7    BEE_PSEL(DWGPIO, P2_7)
+
+/* Port 3 */
+#define BEE_PSEL_GPIO_24_P3_0    BEE_PSEL(DWGPIO, P3_0)
+#define BEE_PSEL_GPIO_25_P3_1    BEE_PSEL(DWGPIO, P3_1)
+#define BEE_PSEL_GPIO_26_P3_2    BEE_PSEL(DWGPIO, P3_2)
+#define BEE_PSEL_GPIO_27_P3_3    BEE_PSEL(DWGPIO, P3_3)
+#define BEE_PSEL_GPIO_28_P3_4    BEE_PSEL(DWGPIO, P3_4)
+#define BEE_PSEL_GPIO_29_P3_5    BEE_PSEL(DWGPIO, P3_5)
+#define BEE_PSEL_GPIO_30_P3_6    BEE_PSEL(DWGPIO, P3_6)
+
+/* Port 4 */
+#define BEE_PSEL_GPIO_13_P4_0    BEE_PSEL(DWGPIO, P4_0)
+#define BEE_PSEL_GPIO_29_P4_1    BEE_PSEL(DWGPIO, P4_1)
+#define BEE_PSEL_GPIO_30_P4_2    BEE_PSEL(DWGPIO, P4_2)
+#define BEE_PSEL_GPIO_31_P4_3    BEE_PSEL(DWGPIO, P4_3)
+
+/* Port 5 */
+#define BEE_PSEL_GPIO_11_P5_1    BEE_PSEL(DWGPIO, P5_1)
+#define BEE_PSEL_GPIO_12_P5_2    BEE_PSEL(DWGPIO, P5_2)
+
+/* Other Ports (H) */
+#define BEE_PSEL_GPIO_10_H_0     BEE_PSEL(DWGPIO, H_0)
 
 #endif /* ZEPHYR_INCLUDE_DT_BINDINGS_PINCTRL_RTL8752H_PINCTRL_H_ */
