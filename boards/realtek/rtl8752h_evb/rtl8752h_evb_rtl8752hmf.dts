@@ -1,0 +1,37 @@
+/*
+ * Copyright (c) 2026 Realtek Semiconductor Corp.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/dts-v1/;
+#include <realtek/bee/rtl8752hmf.dtsi>
+#include "rtl8752h_evb.dtsi"
+
+/ {
+	model = "Realtek RTL8752H Evaluation Board RTL8752HMF";
+	compatible = "realtek,rtl8752h_evb_rtl8752hmf";
+};
+
+&flash {
+	partitions {
+		compatible = "fixed-partitions";
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		app_partition: partition@15000 {
+			label = "app-image";
+			reg = <0x15000 DT_SIZE_K(204)>;
+		};
+
+		storage_partition: partition@48000 {
+			label = "storage";
+			reg = <0x48000 DT_SIZE_K(16)>;
+		};
+
+		ota_temp_partition: partition@4C000 {
+			label = "ota-temp";
+			reg = <0x4C000 DT_SIZE_K(208)>;
+		};
+	};
+};
