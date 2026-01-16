@@ -44,11 +44,11 @@ class MPCLIBinaryRunner(ZephyrBinaryRunner):
     @classmethod
     def do_add_parser(cls, parser):
         mpcli_parser = parser
-        mpcli_parser.add_argument('--bee-port', required=True, type=str,
+        mpcli_parser.add_argument('--port', required=True, type=str,
                                 help='Serial communication port (e.g., COM3, /dev/ttyUSB0)')
-        mpcli_parser.add_argument('--bee-bin-address', type=str,
+        mpcli_parser.add_argument('--bin-address', type=str,
                         help='Download address(hex format, e.g., 0x8000000) for specified binary file ')
-        mpcli_parser.add_argument('--bee-mp-json', type=str,
+        mpcli_parser.add_argument('--mp-json', type=str,
                         help=dedent('''
                         Configuration json file containing binary path and download address.
                         Example format:
@@ -75,7 +75,7 @@ class MPCLIBinaryRunner(ZephyrBinaryRunner):
     @classmethod
     def do_create(cls, cfg, args):
         return MPCLIBinaryRunner(
-            cfg, args.bee_port, build_dir=cfg.build_dir, bin_address=args.bee_bin_address, chip_erase=args.erase, mp_json=args.bee_mp_json, reset=args.reset)
+            cfg, args.port, build_dir=cfg.build_dir, bin_address=args.bin_address, chip_erase=args.erase, mp_json=args.mp_json, reset=args.reset)
 
     def forceable_check(self, cond, msg=""):
         if not cond:
@@ -104,18 +104,6 @@ class MPCLIBinaryRunner(ZephyrBinaryRunner):
         }
         self.files.append(file_item)
 
-    @staticmethod
-    def flash_address_from_build_conf(build_conf: BuildConfiguration):
-        '''If CONFIG_HAS_FLASH_LOAD_OFFSET is n in build_conf,
-        return the CONFIG_FLASH_BASE_ADDRESS value. Otherwise, return
-        CONFIG_FLASH_BASE_ADDRESS + CONFIG_FLASH_LOAD_OFFSET.
-        '''
-        if build_conf.getboolean('CONFIG_HAS_FLASH_LOAD_OFFSET'):
-            return (build_conf['CONFIG_FLASH_BASE_ADDRESS'] +
-                    build_conf['CONFIG_FLASH_LOAD_OFFSET'])
-        else:
-            return build_conf['CONFIG_FLASH_BASE_ADDRESS']
-
     def do_run(self, command, **kwargs):
         self.require('mpcli')
         bin_file_path = ""
@@ -124,7 +112,7 @@ class MPCLIBinaryRunner(ZephyrBinaryRunner):
 
         if self.mp_json:
             # use file provided by mp json
-            mptoolconfig_path = Path(self.mp_json)
+            mptoolconfig_path = self.mp_json
             if not os.path.isfile(mptoolconfig_path):
                 log.err('no such json file {}'.format(mptoolconfig_path))
         else:
@@ -135,7 +123,7 @@ class MPCLIBinaryRunner(ZephyrBinaryRunner):
                     if self.bin_address:
                         download_address = self.bin_address
                     else:
-                        err = 'Cannot flash; --bee-bin-address is required when file is specifiied'
+                        err = 'Cannot flash; --bin-address is required when file is specifiied'
                         raise ValueError(err)
                 else:
                     err = 'Cannot flash; mpcli runner only supports bin file'
@@ -152,10 +140,10 @@ class MPCLIBinaryRunner(ZephyrBinaryRunner):
             if not os.path.isfile(bin_file_path):
                 log.err('Cannot flash; file ({}) not found'.format(bin_file_path))
 
-        self.add_file(download_address, bin_file_path.name)
+            self.add_file(download_address, bin_file_path.name)
 
-        mptoolconfig_path = str(bin_file_path.parent / "mptoolconfig.json")
-        self.export_to_file(mptoolconfig_path)
+            mptoolconfig_path = str(bin_file_path.parent / "mptoolconfig.json")
+            self.export_to_file(mptoolconfig_path)
 
         cmd_args = [
             'mpcli',
@@ -173,4 +161,5 @@ class MPCLIBinaryRunner(ZephyrBinaryRunner):
         try:
             self.check_call(cmd_args)
         except Exception as e:
+            self.logger.error(cmd_args)
             self.logger.error(e.args)
