@@ -1,4 +1,4 @@
-# Copyright (c) 2026 Realtek Semiconductor Corp.
+# Copyright (c) 2026, Realtek Semiconductor Corporation
 # SPDX-License-Identifier: Apache-2.0
 
 board_runner_args(jlink "--device=RTL87X2G" "--speed=4000")
