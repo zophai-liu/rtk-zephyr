@@ -5,7 +5,7 @@ menuconfig GPIO_BEE
 	bool "Realtek Bee series GPIO driver"
 	default y
 	select USE_HAL_REALTEK_BEE_GPIO
-	depends on DT_HAS_REALTEK_BEE_GPIO_ENABLED
 	select PINCTRL
+	depends on DT_HAS_REALTEK_BEE_GPIO_ENABLED
 	help
 	  This option enables the GPIO driver for Realtek Bee SoCs.

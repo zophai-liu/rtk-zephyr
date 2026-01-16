@@ -32,8 +32,8 @@
 
 LOG_MODULE_REGISTER(gpio_bee, CONFIG_GPIO_LOG_LEVEL);
 
-#define GPIO_GetPortIntStatus(port) (((GPIO_TypeDef *)(port))->GPIO_INT_STS)
-#define GPIO_GetPortDirection(port) (((GPIO_TypeDef *)(port))->GPIO_DDR)
+#define GPIO_GET_PORT_INT_STATUS(port) (((GPIO_TypeDef *)(port))->GPIO_INT_STS)
+#define GPIO_GET_PORT_DIRECTION(port)  (((GPIO_TypeDef *)(port))->GPIO_DDR)
 
 struct gpio_pad_node {
 	sys_snode_t node;
@@ -332,7 +332,7 @@ static uint32_t gpio_bee_get_pending_int(const struct device *dev)
 	const struct gpio_bee_config *config = dev->config;
 	GPIO_TypeDef *port_base = config->port_base;
 
-	return GPIO_GetPortIntStatus(port_base);
+	return GPIO_GET_PORT_INT_STATUS(port_base);
 }
 
 #ifdef CONFIG_GPIO_GET_DIRECTION
@@ -341,7 +341,7 @@ int gpio_bee_port_get_direction(const struct device *port, gpio_port_pins_t map,
 {
 	const struct gpio_bee_config *config = port->config;
 	GPIO_TypeDef *port_base = config->port_base;
-	gpio_port_pins_t gpio_dir_status = GPIO_GetPortDirection(port_base);
+	gpio_port_pins_t gpio_dir_status = GPIO_GET_PORT_DIRECTION(port_base);
 
 	if (inputs != NULL) {
 		*inputs = gpio_dir_status;
@@ -362,7 +362,7 @@ static void gpio_bee_isr(void *arg)
 	struct gpio_bee_data *data = dev->data;
 	GPIO_TypeDef *port_base = config->port_base;
 	const struct device *port = dev;
-	uint32_t pins = GPIO_GetPortIntStatus(port_base);
+	uint32_t pins = GPIO_GET_PORT_INT_STATUS(port_base);
 
 	gpio_fire_callbacks(&data->cb, port, pins);
 
