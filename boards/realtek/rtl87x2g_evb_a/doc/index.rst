@@ -123,16 +123,16 @@ Ensure that the J-Link is properly configured and connected to the board. Once t
 Visualizing the message
 =======================
 
-#.Connect the UART:
+#. Connect the UART:
 
    - Connect P3_2 (TX of UART2) to the RX of the RS232 module.
    - Connect P3_3 (RX of UART2) to the TX of the RS232 module.
 
-#.Open a serial communication tool that you are familiar with:
+#. Open a serial communication tool that you are familiar with:
 
-    - Set the baud rate of the port where the RS232 module is connected to 2000000.
+    - Set the baud rate of the port where the RS232 module is connected to 115200.
 
-#.Press the reset button:
+#. Press the reset button:
 
     - You should see “Hello World! rtl87x2g_evb_a/rtl8762gru” in your terminal.
 
