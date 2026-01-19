@@ -2,8 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 description: |
-  A Pad refers to the physical pin exposed on the chip package (e.g., P0_0, P0_1).
-  Most Pads can be configured via pinmuxing to function as GPIOs.
+  Bee GPIO controller.
+  First of all, a Pad of bee series soc refers to the physical pin exposed on the chip package
+  (e.g., P0_0, P0_1). Most Pads can be configured via pinmuxing to function as GPIOs.
 
   In contrast, the GPIO in the driver refers to the peripheral control logic, which is distinct
   from the physical Pads. A single GPIO port consists of 32 logical pins (e.g., GPIOA_0...GPIOA_31).
