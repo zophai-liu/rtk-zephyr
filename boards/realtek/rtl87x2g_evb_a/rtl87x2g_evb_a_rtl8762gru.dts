@@ -7,6 +7,7 @@
 /dts-v1/;
 #include <realtek/bee/rtl8762grh_gru.dtsi>
 #include "rtl87x2g_evb_a_common.dtsi"
+#include "rtl87x2g_evb_a_grh_gru-pinctrl.dtsi"
 
 / {
 	model = "Realtek RTL87x2G Model A Evaluation Board with RTL8762GRU Daughter Board";

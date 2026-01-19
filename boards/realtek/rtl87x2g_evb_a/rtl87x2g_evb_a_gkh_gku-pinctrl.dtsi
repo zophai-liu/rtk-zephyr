@@ -30,9 +30,7 @@
 		};
 
 		group2 {
-			psels = <BEE_PSEL_GPIOA_1_P0_1>,
-					<BEE_PSEL_GPIOA_2_P0_2>,
-					<BEE_PSEL_GPIOA_6_P0_6>,
+			psels = <BEE_PSEL_GPIOA_6_P0_6>,
 					<BEE_PSEL_GPIOA_10_P1_2>;
 		};
 	};
