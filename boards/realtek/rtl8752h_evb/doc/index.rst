@@ -1,136 +1,147 @@
-.. _rtl8752h_evb:
+.. zephyr:board:: rtl8752h_evb
 
 Overview
 ********
 
-RTL8752H evaluation board works along with an interchangeable daughterboard that houses
-a RTL8752H series SoC.
-
-The RTL8752H evaluation board is compatible with the following daughter boards:
-
-- RTL8752HJL/RTL8752HMF Daughter Board
-- RTL8752HJF/RTL8752HKF Daughter Board
-
-.. image:: img/rtl8752h_evb_blocks_distribution_diagram-front.webp
-     :align: center
-     :alt: rtl8752h_evb_blocks_distribution_diagram-front
+RTL8752H supports Bluetooth 5.4 + 2.4GHz + IEEE 802.15.4(Thread/Zigbee) with ultra low power consumption. Equipped with 40MHz ARM Cortex-M0+ processor, large size Flash/SRAM, and flexible GPlOs, widely used in remote controller, Mesh smart home, small UI HMI device, low-cost wearable device, smart health & medical, smart meters, smart lock, electronic shelf label, and other products.
+For more information, see  `RTL8752H Introduction`_.
 
 Hardware
 ********
 
-SoC Series
-==================
+RTL8752H Series Features
+========================
 
-The RTL8752H series contains various chip types, each supporting different hardware features.
+The features include the following:
 
-Below are the common hardware features of the RTL8752H series:
-
-- ARM Cortex-M0+ core
+- ARM Cortex-M0+ maximum frequency 40MHz
+- 120KB SRAM totally
+- 512KB/1024KB Flash (depends on part number)
 - Bluetooth low energy and 802.15.4
-- 352kByte ROM, 120kByte RAM, and a maximum 8M-bit MCM Flash
-- Ultra-low-power, power management unit
-- Analog-to-digital converter (ADC)
-- Smart I/O distribution controller
-- Analog microphone (MIC) interface
-- IR transceiver
-- Hardware key-scan
-- Quad-decoder
-- QFN package
+- Supports Secure Boot
+- Peripheral Interface:
 
-The `RTL8752H Introduction`_ has detailed hardware information about specific part number of RTL8752H series.
+  - Flexible GPIO design
+  - Hardware Keyscan and Quad-decoder
+  - Embedded IR transceiver and receiver
+  - Real-Time Counters (RTC)
+  - SPI master/slave ×2, Timers ×8, I2C ×2, PWM ×8, UART ×2
+  - I8080/QSPI
+  - 400ksps, 12bits, 6 channels AUXADC
+  - I2S/PCM interface
+  - Internal 32K RCOSC to keep BLE link
+  - Embedded PGA and audio ADC
+  - AES-128/192/256 encryption/decryption engine and TRNG
 
-Board
-==================
+- RF Performance:
+  - Tx Power: 0/4/7.5dBm adjustable (refer to datasheet for details)
+  - BLE Rx Sensitivity: -97dBm@1M
+  - 15.4 Rx Sensitivity: -102dBm@250 kbps O-QPSK DSSS
+  - Fast AGC control to improve receiving dynamic range
 
-RTL8752H Evaluation Board supports these features:
+Board Features
+==============
 
-- 5V to 3.3V and 2.5V LDO power modules
-- Six-axis motion sensor module
-- Reset key and 5 independent keys
-- Support audio module interface
-- Red LED module
-- USB to UART chip, FT232RL
+The RTL8752H evaluation board uses a interchangeable daughterboard carrying the RTL8752H SoC.
+Supported daughterboards include:
 
-Supported Features
-==================
+- RTL8752HJL/RTL8752HMF Daughter Board
+- RTL8752HJF/RTL8752HKF Daughter Board
 
-RTL8752H-EVB's configuration supports the following hardware features:
+More information about the board can be found at `RTL8752H Evaluation Board Guide`_.
 
-+-----------+------------+-------------------------------------+
-| Interface | Controller | Driver/Component                    |
-+===========+============+=====================================+
-| NVIC      | on-chip    | nested vector interrupt controller  |
-+-----------+------------+-------------------------------------+
-| SYSTICK   | on-chip    | systick                             |
-+-----------+------------+-------------------------------------+
-| GPIO      | on-chip    | gpio                                |
-+-----------+------------+-------------------------------------+
-| PINMUX    | on-chip    | pinctrl                             |
-+-----------+------------+-------------------------------------+
-| CLOCK     | on-chip    | clock control                       |
-+-----------+------------+-------------------------------------+
-| UART      | on-chip    | serial port                         |
-+-----------+------------+-------------------------------------+
+.. zephyr:board-supported-hw::
 
-Other hardware features are not currently supported by Zephyr.
-
-Connections and IOs
-===================
-
-Please refer to `RTL8752H EVB Interfaces Distribution`_ which has detailed information about board interfaces.
-
-System Clock
-============
-
-The RTL8752H series has a built-in 40MHz crystal oscillator circuit to provide a stable and controllable system clock.
-
-Serial Port
-===========
-
-The RTL8752H series has 3 UARTs. By default, UART2 is configured for the console and log output.
-
-Programming
+Prerequisites
 *************
 
-Flashing Realtek's Images
-==========================
+Before running an application, certain images provided by Realtek must be programmed into the device. Run the following command to retrieve these images:
 
-To successfully run a Zephyr application on the RTL8752H board, some essential images provided by Realtek must be programmed into the board, in addition to the Zephyr image.
+.. code-block:: console
 
-`RTL8752H EVB Hardware Connection and Download Guide`_ provides a structured approach to understanding these images, wiring for
-download mode, and step-by-step instructions for flashing them.
+   $ west blobs fetch hal_realtek --allow-regex 'bee/rtl8752h/bin/.*'
 
-Flashing Zephyr Image
-=======================
+These images need to be downloaded using ``mpcli``. For guidance on how to use mpcli and how to put the board into download mode, please refer to :ref:`Using MPCli <using_mpcli>`.
 
-Before using the J-Link to flash the Zephyr image, it's essential to first configure it correctly by referring to the `J-Link Setup Guide`_.
-Ensure that the J-Link is properly configured and connected to the board. Once the setup is verified, proceed to build and flash the :zephyr:code-sample:`hello_world` application.
+.. code-block:: console
 
-   .. zephyr-app-commands::
-      :zephyr-app: samples/hello_world
-      :board: rtl8752h_evb/rtl8762hkf
-      :goals: build flash
+   west flash --port /dev/ttyX --mp-json $ZEPHYR_BASE/../modules/hal/realtek/bee/flash_map/rtl8752h/essential_images.json
 
-Visualizing the message
-=======================
+*************************
 
-#. Connect the UART:
+.. zephyr:board-supported-runners::
 
-   - UART2 TX/RX: P3_0/P3_1
+Flashing
+========
+
+.. _using_mpcli:
+
+Using MPCli
+-----------
+
+``MPCli`` is the default flash runner for the RTL8752H evaluation board, which enables flashing via a UART interface. A UART‑to‑USB(FT232RL) is integrated to the board for ready‑to‑use flashing and logging. Follow the instructions in the :ref:`Realtek Bee Flash Programmer (MPCli) <runner_mpcli>` to setup ``MPCli``.
+:ref:`Realtek Bee Flash Programmer (MPCli) <runner_mpcli>`
+
+.. image:: img/rtl8752h_evb_download_mode.webp
+    :align: center
+    :alt: rtl8752h_evb_download_mode
+
+1. Connect to the USB port CON1 on the board.
+2. Connect P3_0 to RX and P3_1 to TX using jumpers.
+3. Pull P0_3 (LOG) low with a Dupont wire.
+4. Reset the board to enter download mode.
+
+.. code-block:: console
+
+   $ west flash --port /dev/ttyX
+
+After downloading, set P0_3 (LOG) back to floating, then reset the board to run the application.
+
+.. note::
+   ``west flash`` always need a ``build`` directory. You can run it from a directory where the ``build`` resides, or specify the build directory with ``-d, --build-dir DIR``.
+
+Using J‑Link
+------------
+
+Alternatively, J-Link can also be used to flash the board using
+the ``--runner`` (or ``-r``) option. Follow the instructions in the `J-Link Setup Guide`_ page to configure J-Link.
+
+.. code-block:: console
+
+   $ west flash -r jlink
+
+Logging
+=======
+
+The following pins are used for logging:
+
++-------+----------------+
+| Pin   | Signal Name    |
++=======+================+
+| P3_0  | UART2_TX       |
++-------+----------------+
+| P3_1  | UART2_RX       |
++-------+----------------+
+
+To view logs, follow these steps:
+
+#. Connect UART:
+
+    - Connect to the USB port CON1 on the board.
+    - Connect P3_0 to RX and P3_1 to TX using jumpers.
 
 #. Open a serial communication tool that you are familiar with:
 
-    - Set the baud rate of the port where the RS232 module is connected to 2000000.
+    - Set the baud rate to 2000000.
 
 #. Press the reset button:
 
     - You should see "Hello World! rtl8752h_evb/rtl8762hkf" in your terminal.
 
 Debugging
-**********
+*********
 
-You can debug an application in the usual way. Here is an example for the
-:zephyr:code-sample:`hello_world` application.
+First, follow the instructions in the `J-Link Setup Guide`_ page to configure J-Link. Then, you can debug an application in the usual way.
 
 .. zephyr-app-commands::
    :zephyr-app: samples/hello_world
@@ -146,14 +157,11 @@ References
 .. _RTL8752H Introduction:
     https://www.realmcu.com/en/Home/Products/RTL8752H-Series
 
-.. _RTL8752H Documentation:
-    https://docs.realmcu.com/sdk/rtl8752h/common/en/latest/overview/text_en
+.. _RTL8752H Evaluation Board Guide:
+    https://docs.realmcu.com/sdk/rtl8752h/common/en/latest/evb_guide/text_en/README.html
 
-.. _RTL8752H EVB Interfaces Distribution:
-    https://docs.realmcu.com/sdk/rtl8752h/common/en/latest/evb_guide/text_en/README.html#interface-distribution
+.. _Realtek Bee Flash Programmer (MPCli) Host Tools:
+    https://docs.zephyrproject.org/latest/develop/flash_debug/host-tools.html#Realtek-Bee-Flash-Programmer-(MPCli)-Host-Tools
 
 .. _J-Link Setup Guide:
     https://github.com/rtkconnectivity/realtek-zephyr-project/wiki/J%E2%80%90Link-Setup-Guide
-
-.. _RTL8752H EVB Hardware Connection and Download Guide:
-    https://github.com/rtkconnectivity/realtek-zephyr-project/wiki/%5BRTL8752H-EVB%5D-Hardware-Connection-and-Download-Guide
