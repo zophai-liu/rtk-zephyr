@@ -1,21 +1,19 @@
-.. _rtl87x2g_evb_a:
-
-RTL87X2G-EVB-A
-#############
+.. zephyr:board:: rtl87x2g_evb_a
 
 Overview
 ********
 
 RTL87x2G Model A evaluation board works along with an interchangeable daughterboard that houses
-a real RTL87x2G series SoC.
+an RTL87x2G series SoC.
 
-The RTL87x2G Model A evaluation board is compatible with the following daughter boards:
+The RTL87x2G Model A evaluation board is compatible with the following daughterboards:
 
 - RTL8762GRU/GRH Daughter Board
 - RTL8762GKU/GKH Daughter Board
 - RTL8762GC Daughter Board
 
-Note: RTL8762GC is currently not supported on Zephyr, because it uses external flash memory, so the size is not fixed.
+.. note::
+    The RTL8762GC is currently not supported in Zephyr due to its reliance on external flash memory, which results in a variable flash size configuration.
 
 .. image:: img/rtl87x2g_evb_a.webp
      :align: center
@@ -25,122 +23,144 @@ Hardware
 ********
 
 SoC Series
-==================
-The RTL87x2G series contains various chip types, each supporting different hardware features.
+==========
+
+The RTL87x2G series comprises various chip types, each supporting different hardware features.
 
 Below are the common hardware features of the RTL87x2G series:
 
-- Realtek KM4 core compatible with Arm Cortex-M55, running at 125MHz
+- Realtek KM4 core compatible with Arm Cortex-M55, running at 40MHz (Maximum 125MHz)
 - M-profile Vector Extension (MVE) for vector computation
-- 32KB Icache, 16KB Dcache, and 384KB SRAM
-- Some part numbers include MCM 4MB PSRAM
-- Hardware keyscan / Quad Decode
-- Flash On-The-Fly
+- 32KB I-Cache, 16KB D-Cache, and 384KB SRAM
+- Select part numbers include MCM 4MB PSRAM
+- Hardware Keyscan / Quad Decode
+- Flash On-The-Fly Decryption
 - Embedded IR TX/RX
-- ISO7816
-- SPIC/SPI_m/SPI_s/SDIO/SD(eMMC)
-- Low power comparator
-- 8CH - AUXADC
-- 24bit HD ADC
-- CAN
+- ISO7816 Interface
+- SPIC/SPI_m/SPI_s/SDIO/SD (eMMC)
+- Low Power Comparator
+- 8-Channel AUXADC
+- 24-bit HD ADC
+- CAN Bus
 - RMII for Ethernet
 - I2S/DAC/AMIC/DMIC/PDM
-- SPIC/RGB888/SEGCOM
-- USB2.0 High-Speed interface
+- SPIC/RGB888/SEGCOM Display Interfaces
+- USB 2.0 High-Speed Interface
 
-The `RTL87x2G Introduction`_ has detailed hardware information about specific part number of RTL87x2G series.
+For detailed hardware information regarding specific part numbers of the RTL87x2G series, please refer to the `RTL87x2G Introduction`_.
 
 Board
-==================
+=====
 
-RTL87x2G Model A Evaluation Board supports these features:
+The RTL87x2G Model A Evaluation Board supports the following features:
 
 - 5V to 3.3V & 1.8V LDO power module
-- Support QSPI (Group1) display interface
-- Support audio module (AMIC, DMIC) interface
+- Supports QSPI (Group1) display interface
+- Supports audio module (AMIC, DMIC) interfaces
 - Red LED and RGB LED module
-- USB to UART chip, FT232RL
+- On-board FT232RL USB-to-UART converter
 
 Supported Features
 ==================
 
-RTL87X2G-MODEL-A-EVB's configuration supports the following hardware features:
-
-+-----------+------------+-------------------------------------+
-| Interface | Controller | Driver/Component                    |
-+===========+============+=====================================+
-| NVIC      | on-chip    | nested vector interrupt controller  |
-+-----------+------------+-------------------------------------+
-| SYSTICK   | on-chip    | systick                             |
-+-----------+------------+-------------------------------------+
-| GPIO      | on-chip    | gpio                                |
-+-----------+------------+-------------------------------------+
-| PINMUX    | on-chip    | pinctrl                             |
-+-----------+------------+-------------------------------------+
-| CLOCK     | on-chip    | clock control                       |
-+-----------+------------+-------------------------------------+
-| UART      | on-chip    | serial port                         |
-+-----------+------------+-------------------------------------+
-
-Other hardware features are not currently supported by Zephyr.
+.. zephyr:board-supported-hw::
 
 Connections and IOs
 ===================
 
-Please refer to `RTL87x2G Model A EVB Interfaces Distribution`_ which has detailed information about board interfaces.
+Refer to the `RTL87x2G Model A EVB Interfaces Distribution`_ for detailed information about the board interfaces.
 
 System Clock
 ============
-The RTL87x2G series has a built-in 40MHz crystal oscillator circuit to provide a stable and controllable system clock.
+
+The RTL87x2G series SoC is configured to use the internal 32KHz clock as a source for the system clock.
 
 Serial Port
 ===========
 
-The RTL87x2G series has 6 UARTs. By default, UART2 is configured for the console and log output.
+The RTL87x2G series SoC has 6 UARTs. By default, UART2 is configured for the console and log output.
 
-Programming
-*************
+FLashing
+*********
+
+Before flashing, please ensure the :ref:`Realtek Bee Flash Programmer (MPCli) Host Tools <_runner_mpcli>` is installed. This is the default runner for the RTL87x2G series SoCs.
 
 Flashing Realtek's Images
 ==========================
-To successfully run a Zephyr application on the RTL87x2G board, five essential images provided by Realtek must be programmed into the board,
-in addition to the Zephyr image.
 
- `RTL87x2G Model A EVB Hardware Connection and Download Guide`_ provides a structured approach to understanding these images, wiring for
- download mode, and step-by-step instructions for flashing them.
+To successfully run Zephyr on the RTL87x2G board, six essential images provided by Realtek must be programmed into the board, in addition to the Zephyr image.
 
-Flashing Zephyr Image
-=======================
+To fetch these essential images, run the following command:
 
-Before using the J-Link to flash the Zephyr image, it's essential to first configure it correctly by referring to the `RTL87x2G J-Link Setup Guide`_.
-Ensure that the J-Link is properly configured and connected to the board. Once the setup is verified, proceed to build and flash the :zephyr:code-sample:`hello_world` application.
+.. code-block:: console
+
+    west blobs fetch hal_realtek --allow-regex 'bee/rtl87x2g/bin/.*'
+
+**Enter Download Mode**
+
+Before flashing, you must ground **P0_3** to enter download mode. 
+There are two DIP switches located on the front and back sides of the EVB. If either switch is toggled to the 'ON' position, P0_3 is grounded.
+
+.. image:: img/rtl87x2g_evb_a-download-mode.webp
+     :align: center
+     :alt: rtl87x2g_evb_a-donwload-mode
+
+After entering download mode, run the following command from the directory containing a ``build`` folder:
+
+.. code-block:: console
+
+    west flash --port /dev/ttyX --mp-json <zephyr workspace>/modules/hal/realtek/bee/flash_map/rtl87x2g/essential_images.json
+
+.. note::
+   The "west flash" command assumes you are running it from the root where the ``build`` directory resides. If not, you must specify the build directory using the ``--build-dir`` or ``-d`` option.
+
+Flashing Zephyr
+===============
+
+Follow the steps below to build and flash the :zephyr:code-sample:`hello_world` application.
 
    .. zephyr-app-commands::
       :zephyr-app: samples/hello_world
       :board: rtl87x2g_evb_a/rtl8762gru
       :goals: build flash
 
+.. note::
+   Append ``--port <port_name>`` to the flash command to specify your serial port.
+
+**Enter Normal Mode**
+
+After successfully flashing the Zephyr image, toggle the DIP switch back to the '1' position to enter normal mode and execute the firmware.
+
 Visualizing the message
-=======================
+***********************
 
 #. Connect the UART:
 
-   - Connect P3_2 (TX of UART2) to the RX of the RS232 module.
-   - Connect P3_3 (RX of UART2) to the TX of the RS232 module.
+   - Connect **P3_2** (UART2 TX) to the RX pin of your USB-to-TTL (RS232) module.
+   - Connect **P3_3** (UART2 RX) to the TX pin of your USB-to-TTL (RS232) module.
 
-#. Open a serial communication tool that you are familiar with:
+#. Open a Serial Terminal:
 
-    - Set the baud rate of the port where the RS232 module is connected to 115200.
+   - Open your preferred serial communication tool (e.g., PuTTY, Tera Term).
+   - Configure the baud rate to **115200**.
 
-#. Press the reset button:
+#. Reset the Board:
 
-    - You should see “Hello World! rtl87x2g_evb_a/rtl8762gru” in your terminal.
+   - Press the reset button on the EVB.
+   - You should see the output ``Hello World! rtl87x2g_evb_a/rtl8762gru`` in your terminal.
 
 Debugging
-**********
+*********
 
-You can debug an application in the usual way.  Here is an example for the
-:zephyr:code-sample:`hello_world` application.
+You can debug an application in the usual way using a J-Link debugger.
+
+For J-link configuration details, please refer to the `RTL87x2G J-Link Setup Guide`_. The J-Link wiring diagram is shown below:
+
+.. image:: img/rtl87x2g_evb_a-jlink-wiring.webp
+     :align: center
+     :alt: rtl87x2g_evb_a-jlink-wiring
+
+Here is an example for the :zephyr:code-sample:`hello_world` application.
 
 .. zephyr-app-commands::
    :zephyr-app: samples/hello_world
@@ -164,6 +184,3 @@ References
 
 .. _RTL87x2G J-Link Setup Guide:
     https://github.com/rtkconnectivity/realtek-zephyr-project/wiki/J%E2%80%90Link-Setup-Guide
-
-.. _RTL87x2G Model A EVB Hardware Connection and Download Guide:
-    https://github.com/rtkconnectivity/realtek-zephyr-project/wiki/%5BRTL87X2G-EVB-Model-A%5D-Hardware-Connection-and-Download-Guide
