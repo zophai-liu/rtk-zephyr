@@ -658,12 +658,14 @@ using the ``--device`` option:
 
 For more about the UF2 format and its tooling, see `USB Flashing Format (UF2)`_.
 
+.. _runner_mpcli:
+
 Realtek Bee Flash Programmer (MPCli) Host Tools
 ***********************************************
 
 Realtek provides `Realtek Flash Programmer (MPCli)`_ as an official programming tool for the Bee series, supporting Linux, macOS, and Windows operating systems. MPCli enables In‑System Programming (ISP) via a UART interface, eliminating the need for external programming hardware. On most official Bee‑series evaluation boards, a built‑in UART‑to‑USB converter is included for ready‑to‑use programming and logging.
 
-After downloading, extract the archive and choose the version compatible with your operating system. Then, add the chosen folder to your system
+After downloading the archive of MPCli, extract it and choose the version compatible with your operating system. Then, add the directory containing the executable to your system
 :ref:`PATH environment variable <env_vars>`.
 
 Before starting, ensure your board is in download mode. Please refer to the board documentation at:
@@ -671,7 +673,7 @@ Before starting, ensure your board is in download mode. Please refer to the boar
 
 .. code-block:: console
 
-   west flash [--runner mpcli] --bee-port /dev/ttyX
+   west flash [--runner mpcli] --port /dev/ttyX
 
 .. _J-Link Software and Documentation Pack:
    https://www.segger.com/downloads/jlink/#J-LinkSoftwareAndDocumentationPack
