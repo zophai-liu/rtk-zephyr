@@ -77,10 +77,6 @@ class MPCLIBinaryRunner(ZephyrBinaryRunner):
         return MPCLIBinaryRunner(
             cfg, args.port, build_dir=cfg.build_dir, bin_address=args.bin_address, chip_erase=args.erase, mp_json=args.mp_json, reset=args.reset)
 
-    def forceable_check(self, cond, msg=""):
-        if not cond:
-            log.die(msg)
-
     def export_to_file(self, filename: str) -> None:
         mptool_config = {
             "mptoolconfig": {
@@ -161,5 +157,4 @@ class MPCLIBinaryRunner(ZephyrBinaryRunner):
         try:
             self.check_call(cmd_args)
         except Exception as e:
-            self.logger.error(cmd_args)
             self.logger.error(e.args)
