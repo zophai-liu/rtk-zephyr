@@ -16,7 +16,7 @@
 	aliases {
 		sw0 = &key4;
 	};
-	
+
 	gpio_keys {
 		compatible = "gpio-keys";
 

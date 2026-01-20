@@ -18,7 +18,7 @@
 		compatible = "fixed-partitions";
 		#address-cells = <1>;
 		#size-cells = <1>;
-		
+
 		/* 0x402d000-0x4080000: Free space for Zephyr */
 		app_partition: partition@2d000 {
 			label = "app-image";

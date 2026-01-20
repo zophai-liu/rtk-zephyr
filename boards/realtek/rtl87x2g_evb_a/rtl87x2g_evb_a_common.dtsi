@@ -22,22 +22,22 @@
 
 	leds {
 		compatible = "gpio-leds";
-	
+
 		led3: led3 {
 			gpios = <&gpioa 29 GPIO_ACTIVE_LOW>;
 			label = "LED 3";
 		};
-	
+
 		led4: led4 {
 			gpios = <&gpioa 30 GPIO_ACTIVE_LOW>;
 			label = "LED 4";
 		};
-	
+
 		led5: led5 {
 			gpios = <&gpioa 8 GPIO_ACTIVE_LOW>;
 			label = "LED 5";
 		};
-	
+
 		led7: led7 {
 			gpios = <&gpioa 9 GPIO_ACTIVE_LOW>;
 			label = "LED 7";

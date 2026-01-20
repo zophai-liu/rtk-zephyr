@@ -82,13 +82,13 @@ void arch_busy_wait(uint32_t usec_to_wait)
 /* Overrides the weak ARM implementation */
 void sys_arch_reboot(int type)
 {
-    /* Convert SYS_REBOOT_WARM (0) to RESET_ALL_EXCEPT_AON (1).
-     * Convert SYS_REBOOT_COLD (1) to RESET_ALL (0).
+	/* Convert SYS_REBOOT_WARM (0) to RESET_ALL_EXCEPT_AON (1).
+	 * Convert SYS_REBOOT_COLD (1) to RESET_ALL (0).
 	 */
-    int wdt_mode = (type == SYS_REBOOT_WARM) ? RESET_ALL_EXCEPT_AON : RESET_ALL;
-    
-    /* Call the watchdog system reset with the converted mode and reset reason. */
-    WDG_SystemReset(wdt_mode, RESET_REASON_ZEPHYR);
+	int wdt_mode = (type == SYS_REBOOT_WARM) ? RESET_ALL_EXCEPT_AON : RESET_ALL;
+
+	/* Call the watchdog system reset with the converted mode and reset reason. */
+	WDG_SystemReset(wdt_mode, RESET_REASON_ZEPHYR);
 }
 
 SYS_INIT(rtl87x2g_platform_init, EARLY, 0);

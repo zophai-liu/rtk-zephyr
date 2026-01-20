@@ -94,22 +94,22 @@ To fetch these essential images, run the following command:
 
 .. code-block:: console
 
-    west blobs fetch hal_realtek --allow-regex 'bee/rtl87x2g/bin/.*'
+   west blobs fetch hal_realtek --allow-regex 'bee/rtl87x2g/bin/.*'
 
 **Enter Download Mode**
 
-Before flashing, you must ground **P0_3** to enter download mode. 
+Before flashing, you must ground **P0_3** to enter download mode.
 There are two DIP switches located on the front and back sides of the EVB. If either switch is toggled to the 'ON' position, P0_3 is grounded.
 
 .. image:: img/rtl87x2g_evb_a-download-mode.webp
      :align: center
-     :alt: rtl87x2g_evb_a-donwload-mode
+     :alt: rtl87x2g_evb_a-download-mode
 
 After entering download mode, run the following command from the directory containing a ``build`` folder:
 
 .. code-block:: console
 
-    west flash --port /dev/ttyX --mp-json <zephyr workspace>/modules/hal/realtek/bee/flash_map/rtl87x2g/essential_images.json
+   west flash --port <port_name> --mp-json <zephyr workspace>/modules/hal/realtek/bee/flash_map/rtl87x2g/essential_images.json
 
 .. note::
    The "west flash" command assumes you are running it from the root where the ``build`` directory resides. If not, you must specify the build directory using the ``--build-dir`` or ``-d`` option.
@@ -175,9 +175,6 @@ References
 
 .. _RTL87x2G Introduction:
     https://www.realmcu.com/en/Home/Product/RTL8762G-RTL877xG-Series
-
-.. _RTL87x2G Documentation:
-    https://www.realmcu.com/en/Home/DownloadList/c175760b-088e-43d9-86da-1fc9b3f07ec3
 
 .. _RTL87x2G Model A EVB Interfaces Distribution:
     https://docs.realmcu.com/sdk/rtl87x2g/common/en/latest/doc/evb_guide/text_en/model_a.html#interfaces-distribution

@@ -81,7 +81,9 @@
 					#address-cells = <1>;
 					#size-cells = <1>;
 
-					/* 0x4000000-0x402d000 is reserved for Realtek firmware. Do not use. */
+					/* 0x4000000-0x402d000 is reserved for Realtek firmwares.
+					 * Do not use.
+					 */
 					reserved: partition@0 {
 						label = "reserved-image";
 						reg = <0x0 DT_SIZE_K(4)>;
