@@ -36,7 +36,6 @@ LOG_MODULE_REGISTER(gpio_bee, CONFIG_GPIO_LOG_LEVEL);
 #define GPIO_GET_PORT_DIRECTION(port)  (((GPIO_TypeDef *)(port))->GPIO_DDR)
 
 struct gpio_pad_node {
-	sys_snode_t node;
 	uint8_t pad_num;
 	uint8_t pin_debounce_ms;
 };
@@ -51,16 +50,13 @@ struct gpio_bee_irq_info {
 };
 
 struct gpio_bee_config {
-	struct gpio_driver_config common;
 	uint16_t clkid;
-	uint8_t port_num;
 	GPIO_TypeDef *port_base;
 	const struct pinctrl_dev_config *pcfg;
 	struct gpio_bee_irq_info *irq_info;
 };
 
 struct gpio_bee_data {
-	struct gpio_driver_data common;
 	const struct device *dev;
 	sys_slist_t cb;
 	struct gpio_pad_node *array;
@@ -459,11 +455,6 @@ static DEVICE_API(gpio, gpio_bee_driver_api) = {
 	GPIO_BEE_ARRAY_DEFINE(index)                                                               \
 	GPIO_BEE_SET_IRQ_INFO(index)                                                               \
 	static const struct gpio_bee_config gpio_bee_port##index##_cfg = {                         \
-		.common =                                                                          \
-			{                                                                          \
-				.port_pin_mask = GPIO_PORT_PIN_MASK_FROM_DT_INST(index),           \
-			},                                                                         \
-		.port_num = DT_INST_PROP(index, port),                                             \
 		.port_base = (GPIO_TypeDef *)DT_INST_REG_ADDR(index),                              \
 		.clkid = DT_INST_CLOCKS_CELL(index, id),                                           \
 		.pcfg = PINCTRL_DT_INST_DEV_CONFIG_GET(index),                                     \

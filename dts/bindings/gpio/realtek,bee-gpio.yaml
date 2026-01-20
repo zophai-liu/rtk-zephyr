@@ -61,19 +61,6 @@ properties:
   "#gpio-cells":
     const: 2
 
-  port:
-    type: int
-    required: true
-    description: |
-      The GPIO port number.
-      GPIO port GPIOA has:
-
-        port = <0>;
-
-      And GPIO port GPIOB has:
-
-        port = <1>;
-
 gpio-cells:
   - pin
   - flags
