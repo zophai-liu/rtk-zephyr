@@ -29,10 +29,10 @@
 		#address-cells = <1>;
 		#size-cells = <1>;
 
-		tcm_reserved0: memroy@100000 {
+		tcm_reserved0: memory@100000 {
 			device_type = "reserved memory for realtek internal usage";
 			reg = <0x100000 DT_SIZE_K(3)>;
-		}
+		};
 
 		/* 0x100c00-0x13cc00: Free space for Zephyr */
 		tcm0: memory@100c00 {
@@ -47,10 +47,10 @@
 			zephyr,memory-region = "ITCM";
 		};
 
-		tcm_reserved1: memroy@13cc00 {
+		tcm_reserved1: memory@13cc00 {
 			device_type = "reserved memory for realtek internal usage";
 			reg = <0x13CC00 DT_SIZE_K(77)>;
-		}
+		};
 	};
 
 	ext_data_ram {
@@ -71,7 +71,6 @@
 
 		buffer_ram: memory@280000 {
 			device_type = "reserved memory for realtek internal usage";
-			compatible = "zephyr,memory-region";
 			reg = <0x280000 DT_SIZE_K(48)>;
 		};
 	};

@@ -24,9 +24,9 @@
 	gpioa_default: gpioa_default {
 		group1 {
 			psels = <BEE_PSEL_GPIOA_8_P1_0>,
-					<BEE_PSEL_GPIOA_9_P1_1>,
-					<BEE_PSEL_GPIOA_29_P3_0>,
-					<BEE_PSEL_GPIOA_30_P3_1>;
+				<BEE_PSEL_GPIOA_9_P1_1>,
+				<BEE_PSEL_GPIOA_29_P3_0>,
+				<BEE_PSEL_GPIOA_30_P3_1>;
 		};
 	};
 };
