@@ -5,20 +5,20 @@
 
 '''Runner for flashing bee devices with mpcli.'''
 
-import os
 import json
-from typing import Any, Dict, List
+import os
 from pathlib import Path
 from textwrap import dedent
+
 from west import log
 
-from runners.core import FileType, RunnerCaps, ZephyrBinaryRunner, BuildConfiguration
+from runners.core import FileType, RunnerCaps, ZephyrBinaryRunner
+
 
 class MPCLIBinaryRunner(ZephyrBinaryRunner):
     '''Runner front-end for espidf.'''
 
-    def __init__(self, cfg, port,
-                 build_dir, bin_address, chip_erase, mp_json, reset):
+    def __init__(self, cfg, port, build_dir, bin_address, chip_erase, mp_json, reset):
         super().__init__(cfg)
         self.port = port
         self.build_dir = build_dir
@@ -31,7 +31,7 @@ class MPCLIBinaryRunner(ZephyrBinaryRunner):
         self.app_bin_file = cfg.bin_file
         self.ext_file = cfg.file
         self.ext_file_type = cfg.file_type
-        self.files: List[Dict[str, Any]] = []
+        self.files: list[dict[str, any]] = []
 
     @classmethod
     def name(cls):
@@ -44,12 +44,21 @@ class MPCLIBinaryRunner(ZephyrBinaryRunner):
     @classmethod
     def do_add_parser(cls, parser):
         mpcli_parser = parser
-        mpcli_parser.add_argument('--port', required=True, type=str,
-                                help='Serial communication port (e.g., COM3, /dev/ttyUSB0)')
-        mpcli_parser.add_argument('--bin-address', type=str,
-                        help='Download address(hex format, e.g., 0x8000000) for specified binary file ')
-        mpcli_parser.add_argument('--mp-json', type=str,
-                        help=dedent('''
+        mpcli_parser.add_argument(
+            '--port',
+            required=True,
+            type=str,
+            help='Serial communication port (e.g., COM3, /dev/ttyUSB0)',
+        )
+        mpcli_parser.add_argument(
+            '--bin-address',
+            type=str,
+            help='Download address(hex format, e.g., 0x8000000) for specified binary file ',
+        )
+        mpcli_parser.add_argument(
+            '--mp-json',
+            type=str,
+            help=dedent('''
                         Configuration json file containing binary path and download address.
                         Example format:
                         {
@@ -69,35 +78,35 @@ class MPCLIBinaryRunner(ZephyrBinaryRunner):
                                 }
                             }
                         }
-                        '''))
+                        '''),
+        )
         return parser
 
     @classmethod
     def do_create(cls, cfg, args):
         return MPCLIBinaryRunner(
-            cfg, args.port, build_dir=cfg.build_dir, bin_address=args.bin_address, chip_erase=args.erase, mp_json=args.mp_json, reset=args.reset)
+            cfg,
+            args.port,
+            build_dir=cfg.build_dir,
+            bin_address=args.bin_address,
+            chip_erase=args.erase,
+            mp_json=args.mp_json,
+            reset=args.reset,
+        )
 
     def export_to_file(self, filename: str) -> None:
         mptool_config = {
             "mptoolconfig": {
                 "port": self.port,
                 "baud": self.baud,
-                "appimage": {
-                    "relativepath": "",
-                    "file": self.files
-                }
+                "appimage": {"relativepath": "", "file": self.files},
             }
         }
         with open(filename, 'w', encoding='utf-8') as f:
             json.dump(mptool_config, f, indent=4, ensure_ascii=False)
 
-    def add_file(self, address: str, name: str,id: int = 0, enable: str = "1") -> None:
-        file_item = {
-            "id": id,
-            "address": address,
-            "name": name,
-            "enable": enable
-        }
+    def add_file(self, address: str, name: str, id: int = 0, enable: str = "1") -> None:
+        file_item = {"id": id, "address": address, "name": name, "enable": enable}
         self.files.append(file_item)
 
     def do_run(self, command, **kwargs):
@@ -110,7 +119,7 @@ class MPCLIBinaryRunner(ZephyrBinaryRunner):
             # use file provided by mp json
             mptoolconfig_path = self.mp_json
             if not os.path.isfile(mptoolconfig_path):
-                log.err('no such json file {}'.format(mptoolconfig_path))
+                log.err(f'no such json file {mptoolconfig_path}')
         else:
             if self.ext_file is not None:
                 # use file provided by the user
@@ -134,7 +143,7 @@ class MPCLIBinaryRunner(ZephyrBinaryRunner):
                     download_address = hex(self.flash_address_from_build_conf(self.build_conf))
 
             if not os.path.isfile(bin_file_path):
-                log.err('Cannot flash; file ({}) not found'.format(bin_file_path))
+                log.err(f'Cannot flash; file ({bin_file_path}) not found')
 
             self.add_file(download_address, bin_file_path.name)
 
@@ -143,8 +152,10 @@ class MPCLIBinaryRunner(ZephyrBinaryRunner):
 
         cmd_args = [
             'mpcli',
-            '-c', self.port,
-            '-f', mptoolconfig_path,
+            '-c',
+            self.port,
+            '-f',
+            mptoolconfig_path,
             '-a',
         ]
 
