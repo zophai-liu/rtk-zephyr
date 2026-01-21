@@ -665,7 +665,7 @@ Realtek Bee Flash Programmer (MPCli) Host Tools
 
 Realtek provides `Realtek Flash Programmer (MPCli)`_ as an official programming tool for the Bee series, supporting Linux, macOS, and Windows operating systems. MPCli enables In‑System Programming (ISP) via a UART interface, eliminating the need for external programming hardware. On most official Bee‑series evaluation boards, a built‑in UART‑to‑USB converter is included for ready‑to‑use programming and logging.
 
-After downloading the archive of MPCli, extract it and choose the version compatible with your operating system. Then, add the directory containing the executable to your system
+After downloading the archive of MPCli, extract it and choose the version compatible with your operating system. Then, add the directory containing the ``mpcli`` executable to your system
 :ref:`PATH environment variable <env_vars>`.
 
 Before starting, ensure your board is in download mode. Please refer to the board documentation at:
@@ -752,9 +752,3 @@ Before starting, ensure your board is in download mode. Please refer to the boar
 
 .. _USB Flashing Format (UF2):
    https://github.com/microsoft/uf2
-
-.. _Realtek Flash Programmer (MPCli):
-   https://docs.realmcu.com/tools/mpcli_tool/en/latest/mpcli/text_en/README.html#basic-burning-functions
-
-.. _Realtek Supported Boards:
-   https://docs.zephyrproject.org/latest/boards/index.html
