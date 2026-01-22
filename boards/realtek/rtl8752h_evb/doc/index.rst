@@ -65,7 +65,7 @@ These images need to be downloaded using ``mpcli``. For guidance on how to use m
 
 .. code-block:: console
 
-   west flash --port /dev/ttyX --mp-json $ZEPHYR_BASE/../modules/hal/realtek/bee/flash_map/rtl8752h/essential_images.json
+   west flash --port /dev/ttyX --mp-json <zephyr workspace>/modules/hal/realtek/bee/flash_map/rtl8752h/essential_images.json
 
 *************************
 

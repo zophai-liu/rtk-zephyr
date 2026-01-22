@@ -34,6 +34,7 @@ static int rtl8752h_platform_init(void)
 	hal_setup_hardware();
 
 	hal_setup_cpu();
+
 	return 0;
 }
 

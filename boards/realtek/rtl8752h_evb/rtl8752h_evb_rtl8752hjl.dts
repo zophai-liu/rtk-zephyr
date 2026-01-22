@@ -21,17 +21,12 @@
 
 		app_partition: partition@15000 {
 			label = "app-image";
-			reg = <0x15000 DT_SIZE_K(204)>;
+			reg = <0x15000 DT_SIZE_K(412)>;
 		};
 
-		storage_partition: partition@48000 {
+		storage_partition: partition@7C000 {
 			label = "storage";
-			reg = <0x48000 DT_SIZE_K(16)>;
-		};
-
-		ota_temp_partition: partition@4C000 {
-			label = "ota-temp";
-			reg = <0x4C000 DT_SIZE_K(208)>;
+			reg = <0x7C000 DT_SIZE_K(16)>;
 		};
 	};
 };

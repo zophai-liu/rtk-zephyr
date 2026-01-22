@@ -21,7 +21,7 @@
 
 		app_partition: partition@15000 {
 			label = "app-image";
-			reg = <0x15000 DT_SIZE_K(500)>;
+			reg = <0x15000 DT_SIZE_K(924)>;
 		};
 
 		storage_partition: partition@FC000 {
