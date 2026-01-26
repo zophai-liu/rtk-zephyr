@@ -14,7 +14,7 @@
 BUILD_ASSERT(CONFIG_SYS_CLOCK_HW_CYCLES_PER_SEC == 32000);
 #endif
 
-static int rtl8752h_platform_init(void)
+void soc_early_reset_hook(void)
 {
 	rtl_boot_stage_record(START_PLATFORM_INIT);
 
@@ -35,7 +35,7 @@ static int rtl8752h_platform_init(void)
 
 	hal_setup_cpu();
 
-	return 0;
+	return;
 }
 
 static int rtl8752h_sysclock_update(void)
@@ -46,5 +46,7 @@ static int rtl8752h_sysclock_update(void)
 	return 0;
 }
 
-SYS_INIT(rtl8752h_platform_init, EARLY, 0);
-SYS_INIT(rtl8752h_sysclock_update, PRE_KERNEL_2, 1);
+void soc_late_init_hook(void)
+{
+	rtl8752h_sysclock_update();
+}

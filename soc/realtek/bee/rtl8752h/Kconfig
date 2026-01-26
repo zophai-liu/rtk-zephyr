@@ -11,5 +11,6 @@ config SOC_SERIES_RTL8752H
 	select PINCTRL
 	select DYNAMIC_INTERRUPTS
 	select THREAD_STACK_INFO
+	select SOC_EARLY_RESET_HOOK
 	help
 	  Enable support for RTL8725H MCU series
