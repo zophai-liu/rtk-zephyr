@@ -15,7 +15,7 @@
 	chosen {
 		zephyr,flash = &flash;
 		zephyr,flash-controller = &fmc;
-		zephyr,sram = &sram0;
+		zephyr,sram = &data_ram_app_0;
 	};
 
 	cpus {
@@ -43,12 +43,13 @@
 		#size-cells = <1>;
 
 		data_ram_rsvd_0: memory@200000 {
-			device_type = "reserved memory for internal usage(e.g. bt stack)";
+			/* reserved memory for internal usage(e.g. bt stack) */
+			compatible = "mimo-sram";
 			reg = <0x100000 DT_SIZE_K(34)>;
 		};
 
 		data_ram_app_0: memory@208800 {
-			compatible = "zephyr,memory-region";
+			compatible = "mimo-sram";
 			reg = <0x208800 DT_SIZE_K(70)>;
 		};
 	};
@@ -58,12 +59,13 @@
 		#size-cells = <1>;
 
 		buffer_ram_rsvd0: memory@280000 {
-			device_type = "reserved memory for internal usage(e.g. bt stack)";
+			/* reserved memory for internal usage(e.g. bt stack) */
+			compatible = "mimo-sram";
 			reg = <0x280000 (DT_SIZE_K(1) + 512)>;
 		};
 
 		buffer_ram_app_0: memory@280600 {
-			compatible = "zephyr,memory-region";
+			compatible = "mimo-sram";
 			reg = <0x280600 (DT_SIZE_K(14) + 512)>;
 		};
 	};
